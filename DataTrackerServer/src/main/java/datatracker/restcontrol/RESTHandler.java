@@ -22,4 +22,15 @@ public class RESTHandler {
 			@RequestParam(value = "password") String password, @RequestParam(value = "email") String email) {
 		return RegistrationHandler.INSTANCE.registerUser(phoneNumber, password, email).toString();
 	}
+	
+	/*@RequestMapping("/login")
+	public String userLogin(@RequestParam(value="phoneNumber") String phoneNumber,
+			@RequestParam(value = "password") String password) {
+		return RegistrationHandler.INSTANCE.registerUser(phoneNumber, password).toString();
+	}*/
+
+	/*@RequestMapping("/log_data")
+	public String logData(@RequestParam(value="phoneNumber") String phoneNumber) {
+		return RegistrationHandler.INSTANCE.registerUser(phoneNumber).toString();
+	}*/
 }

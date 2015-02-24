@@ -15,7 +15,7 @@ public class User {
 	@Id
 	private String phoneNumber;
 
-	//@JsonIgnore
+	@JsonIgnore
 	private String password;
 	
 	private long quota;
