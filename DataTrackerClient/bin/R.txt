@@ -334,7 +334,7 @@ int drawable abc_textfield_search_activated_mtrl_alpha 0x7f020030
 int drawable abc_textfield_search_default_mtrl_alpha 0x7f020031
 int drawable abc_textfield_search_material 0x7f020032
 int drawable ic_launcher 0x7f020033
-int id Password 0x7f090042
+int id Password 0x7f09003f
 int id action_bar 0x7f090031
 int id action_bar_activity_content 0x7f090003
 int id action_bar_container 0x7f090030
@@ -348,11 +348,11 @@ int id action_menu_presenter 0x7f090006
 int id action_mode_bar 0x7f09002e
 int id action_mode_bar_stub 0x7f09002d
 int id action_mode_close_button 0x7f090020
-int id action_settings 0x7f090044
+int id action_settings 0x7f090046
 int id activity_chooser_view_content 0x7f090021
 int id always 0x7f090014
 int id beginning 0x7f09001b
-int id button1 0x7f090043
+int id button1 0x7f090042
 int id checkbox 0x7f090029
 int id collapseActionView 0x7f090015
 int id decor_content_parent 0x7f09002f
@@ -376,7 +376,7 @@ int id middle 0x7f09001d
 int id never 0x7f090017
 int id none 0x7f09000f
 int id normal 0x7f09000b
-int id phn_text 0x7f09003f
+int id phn_text 0x7f090040
 int id progress_circular 0x7f090007
 int id progress_horizontal 0x7f090008
 int id radio 0x7f09002b
@@ -397,7 +397,9 @@ int id showTitle 0x7f090012
 int id split_action_bar 0x7f090004
 int id submit_area 0x7f09003c
 int id tabMode 0x7f09000c
-int id textView1 0x7f090040
+int id textView1 0x7f090043
+int id textView2 0x7f090044
+int id textView3 0x7f090045
 int id title 0x7f090027
 int id up 0x7f090001
 int id useLogo 0x7f090013
