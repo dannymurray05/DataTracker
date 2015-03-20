@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-//import android.net.http.AndroidHttpClient;
+import android.net.http.AndroidHttpClient;
 
 
 public class Login extends Activity {
@@ -32,7 +32,5 @@ public class Login extends Activity {
 			}
 		}
 		);
-		
-
 	}
 }
