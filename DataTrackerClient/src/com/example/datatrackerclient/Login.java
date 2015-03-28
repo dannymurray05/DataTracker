@@ -1,7 +1,10 @@
 package com.example.datatrackerclient;
 
 
+import com.example.datatrackerclient.servercommunications.ServerRequestHandler;
+
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,8 +32,14 @@ public class Login extends Activity {
 				Toast.makeText(Login.this, "Invalid Username and Password",Toast.LENGTH_LONG).show();
 				
 				//HttpClient client1= new DefaultHttpClient();
+				Runnable registerUser = new Runnable() {
+					public void run() {
+						ServerRequestHandler.registerUser("5303004290", "password", "dannymurray05@gmail.com");
+					}
+				};
+				Thread registerUserThread = new Thread(registerUser);
+				registerUserThread.start();
 			}
-		}
-		);
+		});
 	}
 }
