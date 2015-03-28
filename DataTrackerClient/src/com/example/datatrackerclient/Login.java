@@ -1,20 +1,21 @@
 package com.example.datatrackerclient;
 
 
-import com.example.datatrackerclient.servercommunications.ServerRequestHandler;
-
 import android.app.Activity;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.net.http.AndroidHttpClient;
+import android.content.Intent;
+//import android.widget.Toast;
+//import android.net.http.AndroidHttpClient;
+
+import com.example.datatrackerclient.servercommunications.ServerRequestHandler;
 
 
 public class Login extends Activity {
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -22,14 +23,17 @@ public class Login extends Activity {
 		setContentView(R.layout.activity_login);
 		
 		
-		Button login  = (Button) findViewById(R.id.button1);
+		Button login  = (Button) findViewById(R.id.button2);
 		
 		login.setOnClickListener(new View.OnClickListener()
 		{
 			
-			public void onClick(View v)
-			{
-				Toast.makeText(Login.this, "Invalid Username and Password",Toast.LENGTH_LONG).show();
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getApplicationContext(), Verify.class);
+				
+				startActivity(intent);			
 				
 				//HttpClient client1= new DefaultHttpClient();
 				Runnable registerUser = new Runnable() {
@@ -39,6 +43,18 @@ public class Login extends Activity {
 				};
 				Thread registerUserThread = new Thread(registerUser);
 				registerUserThread.start();
+			}
+		}
+		);
+		Button verify = (Button) findViewById(R.id.button1);
+		verify.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent1 = new Intent(getApplicationContext(), Verify.class);
+				
+				startActivity(intent1);			
 			}
 		});
 	}
