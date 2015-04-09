@@ -37,7 +37,7 @@ public class Login extends Activity {
 				//HttpClient client1= new DefaultHttpClient();
 				Runnable registerUser = new Runnable() {
 					public void run() {
-						ServerRequestHandler.registerUser("5303004290", "password", "dannymurray05@gmail.com");
+						ServerRequestHandler.newUser("5303004290", "password", "dannymurray05@gmail.com");
 					}
 				};
 				Thread registerUserThread = new Thread(registerUser);
