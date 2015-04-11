@@ -7,7 +7,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import datatracker.requesthandling.RegistrationHandler;
+import datatracker.usermanagement.RegistrationHandler;
 
 
 @Configuration

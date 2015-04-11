@@ -15,14 +15,14 @@ public class User {
 	@Id
 	private String phoneNumber;
 
+	private String email;
+
 	@JsonIgnore
 	private String password;
 	
 	private long quota;
 	
 	private long threshold;
-	
-	private String email;
 
 	@OneToMany(mappedBy = "user")
 	private Set<Device> devices = new HashSet<>();
