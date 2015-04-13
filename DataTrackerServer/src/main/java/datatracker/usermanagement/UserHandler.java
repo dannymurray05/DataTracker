@@ -10,8 +10,8 @@ import datatracker.repositories.UserRepository;
 
 @Configuration
 @EnableAutoConfiguration
-public class RegistrationHandler {
-	public static final RegistrationHandler INSTANCE = new RegistrationHandler();
+public class UserHandler {
+	public static final UserHandler INSTANCE = new UserHandler();
 	
 	@Autowired
 	private ApplicationContext appContext;
@@ -35,7 +35,7 @@ public class RegistrationHandler {
 		}
 	}
 
-	protected RegistrationHandler() {}
+	protected UserHandler() {}
 	
 	public RegistrationError registerUser(String phoneNumber, String password, String email) {
 		UserRepository userRepo = appContext.getBean(UserRepository.class);
@@ -60,6 +60,21 @@ public class RegistrationHandler {
 			System.out.println(user.toString());
 		}
 		return null; //success
+	}
+
+	public boolean validateUserAndPassword(String phoneNumber, String password) {
+		UserRepository userRepo = appContext.getBean(UserRepository.class);
+		User newUser = userRepo.findOne(phoneNumber);
+		
+		if(newUser == null) {
+			return false;
+		}
+
+		if(!password.equals(newUser.getPassword())) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public void setApplicationContext(ApplicationContext appContext) {

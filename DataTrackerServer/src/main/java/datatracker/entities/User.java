@@ -37,9 +37,59 @@ public class User {
 		this.email = email;
 	}
 
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public long getQuota() {
+		return quota;
+	}
+
+	public void setQuota(long quota) {
+		this.quota = quota;
+	}
+
+	public long getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(long threshold) {
+		this.threshold = threshold;
+	}
+
+	public Set<Device> getDevices() {
+		return devices;
+	}
+
+	public void setDevices(Set<Device> devices) {
+		this.devices = devices;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("User[Phone Number='%s', Password='%s', Quota=%d, Threshold=%d, Email='%s']",
 				phoneNumber, password, quota, threshold, email);
 	}
+
+	
 }

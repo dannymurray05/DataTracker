@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import datatracker.datamangement.DataHandler;
-import datatracker.usermanagement.RegistrationHandler;
+import datatracker.usermanagement.UserHandler;
 
 
 @Configuration
@@ -19,7 +19,7 @@ public class DataTrackerServerApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(DataTrackerServerApplication.class, args);
-        RegistrationHandler.INSTANCE.setApplicationContext(context);
+        UserHandler.INSTANCE.setApplicationContext(context);
         DataHandler.INSTANCE.setApplicationContext(context);
     }
 }

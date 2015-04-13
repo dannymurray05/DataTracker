@@ -1,16 +1,21 @@
 package datatracker.datamangement;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import datatracker.entities.Device;
 import datatracker.entities.UsageHistory;
 import datatracker.entities.UsageHistoryId;
+import datatracker.entities.User;
 import datatracker.repositories.UsageHistoryRepository;
+import datatracker.repositories.UserRepository;
 
 @Configuration
 @EnableAutoConfiguration
@@ -72,6 +77,28 @@ public class DataHandler {
 		UsageHistoryRepository usageHistoryRepo = appContext.getBean(UsageHistoryRepository.class);
 		
 		List<UsageHistory> usageHistoryRange = usageHistoryRepo.findByDateBetween(beginDate, endDate);
+		
+		//debug
+		for(UsageHistory uh : usageHistoryRange) {
+			System.out.println(uh.toString());
+		}
+		//end debug
+
+		return usageHistoryRange;
+	}
+
+	public List<UsageHistory> getUserUsageData(String phoneNumber, Date beginDate, Date endDate) {
+		UserRepository userRepo = appContext.getBean(UserRepository.class);
+		UsageHistoryRepository usageHistoryRepo = appContext.getBean(UsageHistoryRepository.class);
+		
+		User user = userRepo.findOne(phoneNumber);
+		Set<Device> devices = user.getDevices();
+		
+		List<UsageHistory> usageHistoryRange = new ArrayList<UsageHistory>();
+		for(Device device : devices) {
+			String devicePhoneNumber = device.getPhoneNumber();
+			usageHistoryRange.addAll(usageHistoryRepo.findByPhoneNumberAndDateBetween(devicePhoneNumber, beginDate, endDate));
+		}
 		
 		//debug
 		for(UsageHistory uh : usageHistoryRange) {

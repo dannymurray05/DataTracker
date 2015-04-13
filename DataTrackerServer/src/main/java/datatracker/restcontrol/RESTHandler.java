@@ -2,11 +2,9 @@ package datatracker.restcontrol;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import datatracker.datamangement.DataHandler;
 import datatracker.entities.UsageHistory;
-import datatracker.usermanagement.RegistrationHandler;
+import datatracker.usermanagement.UserHandler;
 
 
 /*@Configuration
@@ -33,7 +31,7 @@ public class RESTHandler {
 	@RequestMapping("/new_user")
 	public ResponseEntity<String> registerUser(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "password") String password, @RequestParam(value = "email") String email) {
-		RegistrationHandler.RegistrationError error = RegistrationHandler.INSTANCE.registerUser(phoneNumber, password, email);
+		UserHandler.RegistrationError error = UserHandler.INSTANCE.registerUser(phoneNumber, password, email);
 		
 		if(error != null) {
 			return new ResponseEntity<String>(error.getErrorMessage(), HttpStatus.BAD_REQUEST);
@@ -79,7 +77,36 @@ public class RESTHandler {
 
         return usageHistory;
     }
+    
+    @RequestMapping("/request_user_data")
+    public @ResponseBody List<UsageHistory> requestUserData(@RequestParam(value="phoneNumber") String phoneNumber,
+    		@RequestParam(value="password") String password,
+    		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
+    		HttpServletResponse response) {
+		Date beginDate = processDateStr(beginDateStr);
+		Date endDate = processDateStr(endDateStr);
+		if(beginDate == null || endDate == null) {
+        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return null;
+		}
 
+		if(!UserHandler.INSTANCE.validateUserAndPassword(phoneNumber, password)) {
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return null;
+		}
+		
+        List<UsageHistory> usageHistory = DataHandler.INSTANCE.getUserUsageData(phoneNumber, beginDate, endDate);
+        
+        if(usageHistory == null) {
+        	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        return usageHistory;
+    }
+    
+    
+    
     public Date processDateStr(String dateStr) {
     	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     	Date date = null;

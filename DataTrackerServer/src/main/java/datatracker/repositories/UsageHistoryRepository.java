@@ -18,4 +18,6 @@ public interface UsageHistoryRepository extends JpaRepository<UsageHistory, Usag
 	List<UsageHistory> findByPhoneNumber(String phoneNumber);
 	
 	List<UsageHistory> findByDateBetween(Date start, Date end);
+	
+	List<UsageHistory> findByPhoneNumberAndDateBetween(String phoneNumber, Date start, Date end);
 }
