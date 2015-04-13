@@ -1,7 +1,5 @@
 package datatracker.usermanagement;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -42,12 +40,12 @@ public class RegistrationHandler {
 	public RegistrationError registerUser(String phoneNumber, String password, String email) {
 		UserRepository userRepo = appContext.getBean(UserRepository.class);
 		User newUser = userRepo.findOne(phoneNumber);
-		Optional<User> userByEmail = userRepo.findByEmail(email);
+		User userByEmail = userRepo.findByEmail(email);
 		if(newUser != null) {
 			System.out.println("User already exists");
 			return RegistrationError.USER_ALREADY_EXISTS;
 		}
-		else if(userByEmail.isPresent() && userByEmail.get() != null) {
+		else if(userByEmail != null) {
 			System.out.println("Email already exists");
 			return RegistrationError.EMAIL_ALREADY_EXISTS;
 		}

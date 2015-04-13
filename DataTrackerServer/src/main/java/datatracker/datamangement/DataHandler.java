@@ -1,6 +1,7 @@
 package datatracker.datamangement;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -18,6 +19,10 @@ public class DataHandler {
 	
 	@Autowired
 	private ApplicationContext appContext;
+
+	public void setApplicationContext(ApplicationContext appContext) {
+		this.appContext = appContext;
+	}
 	
 	//public static final long 
 	
@@ -39,11 +44,6 @@ public class DataHandler {
 	public DataError logData(String phoneNumber, Date date, int hour, int bytes) {
 		UsageHistoryRepository usageHistoryRepo = appContext.getBean(UsageHistoryRepository.class);
 		
-		Iterable<UsageHistory> completeUsageHistory = usageHistoryRepo.findAll();
-		for(UsageHistory usageHistory : completeUsageHistory) {
-			System.out.println(usageHistory.toString());
-		}	
-		
 		UsageHistoryId id = new UsageHistoryId(phoneNumber, date);
 		UsageHistory record = usageHistoryRepo.findOne(id);
 
@@ -52,11 +52,33 @@ public class DataHandler {
 		}
 
 		if(!record.insertData(hour, bytes)) {
+			System.out.println(DataError.INVALID_DATA.getErrorMessage());
 			return DataError.INVALID_DATA;
 		}
 
 		usageHistoryRepo.save(record);
 		
+		//debug
+		Iterable<UsageHistory> completeUsageHistory = usageHistoryRepo.findAll();
+		for(UsageHistory usageHistory : completeUsageHistory) {
+			System.out.println(usageHistory.toString());
+		}
+		//end debug
+		
 		return null; //success
+	}
+
+	public List<UsageHistory> getUsageData(String phoneNumber, Date beginDate, Date endDate) {
+		UsageHistoryRepository usageHistoryRepo = appContext.getBean(UsageHistoryRepository.class);
+		
+		List<UsageHistory> usageHistoryRange = usageHistoryRepo.findByDateBetween(beginDate, endDate);
+		
+		//debug
+		for(UsageHistory uh : usageHistoryRange) {
+			System.out.println(uh.toString());
+		}
+		//end debug
+
+		return usageHistoryRange;
 	}
 }
