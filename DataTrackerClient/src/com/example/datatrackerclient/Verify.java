@@ -8,10 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
-import android.content.Intent;
-import android.widget.Toast;
-import android.net.http.AndroidHttpClient;
-
 
 public class Verify extends Activity {
 	
@@ -31,7 +27,10 @@ public class Verify extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-						
+				
+				Intent correct_user = new Intent(getApplicationContext(), Datatracker.class);
+							
+				startActivity(correct_user);
 			}
 		}
 		);
