@@ -76,6 +76,19 @@ public class UserHandler {
 
 		return true;
 	}
+	
+	public boolean validateEmail(String phoneNumber, String code) {
+		UserRepository userRepo = appContext.getBean(UserRepository.class);
+		User newUser = userRepo.findOne(phoneNumber);
+		
+		if(newUser.getValidationCode().equals(code)) {
+			newUser.setEmailValidated(true);
+			userRepo.save(newUser);
+			return true;
+		}
+
+		return false;
+	}
 
 	public void setApplicationContext(ApplicationContext appContext) {
 		this.appContext = appContext;

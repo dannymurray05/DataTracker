@@ -61,7 +61,7 @@ public class RESTHandler {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping("/log_data")
+	@RequestMapping(value = "/log_data", method = RequestMethod.POST)
 	public ResponseEntity<String> logData(@RequestParam(value="phoneNumber") String phoneNumber, @RequestParam(value="date") String dateStr,
 			@RequestParam(value="hour") String hour, @RequestParam(value="bytes") String bytes) {
 		Date date = processDateStr(dateStr);
@@ -78,7 +78,7 @@ public class RESTHandler {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-    @RequestMapping("/request_data")
+    @RequestMapping(value = "/request_data", method = RequestMethod.GET)
     public @ResponseBody List<UsageHistory> requestData(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
     		HttpServletResponse response) {
@@ -99,7 +99,7 @@ public class RESTHandler {
         return usageHistory;
     }
     
-    @RequestMapping("/request_user_data")
+    @RequestMapping(value = "/request_user_data", method = RequestMethod.GET)
     public @ResponseBody List<UsageHistory> requestUserData(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="password") String password,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
@@ -125,6 +125,18 @@ public class RESTHandler {
 
         return usageHistory;
     }
+
+	@RequestMapping(value = "/validate_email", method = RequestMethod.POST)
+	public ResponseEntity<String> validateEmail(@RequestParam(value="phoneNumber") String phoneNumber,
+			@RequestParam(value = "code") String code) {
+		boolean error = UserHandler.INSTANCE.validateEmail(phoneNumber, code);
+		
+		if(error) {
+			return new ResponseEntity<String>("Invalid code", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>(HttpStatus.CREATED);
+	}
     
 	/*@RequestMapping("/login")
 	public String userLogin(@RequestParam(value="phoneNumber") String phoneNumber,

@@ -1,5 +1,7 @@
 package datatracker.entities;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,14 +13,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class User {
+
+	@JsonIgnore
+	private static SecureRandom random = new SecureRandom();
 	
 	@Id
 	private String phoneNumber;
 
 	private String email;
+	
+	private boolean emailValidated;
 
 	@JsonIgnore
 	private String password;
+
+	@JsonIgnore
+	private String validationCode;
 	
 	private long quota;
 	
@@ -35,6 +45,7 @@ public class User {
 		this.quota = quota;
 		this.threshold = threshold;
 		this.email = email;
+		this.validationCode = generateRandomCode();
 	}
 
 	public String getPhoneNumber() {
@@ -51,6 +62,14 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public boolean getEmailValidated() {
+		return emailValidated;
+	}
+
+	public void setEmailValidated(boolean validated) {
+		emailValidated = validated;
 	}
 
 	public String getPassword() {
@@ -84,6 +103,14 @@ public class User {
 	public void setDevices(Set<Device> devices) {
 		this.devices = devices;
 	}
+	
+	public String getValidationCode() {
+		return this.validationCode;
+	}
+	
+	public void getValidationCode(String code) {
+		validationCode = code;
+	}
 
 	@Override
 	public String toString() {
@@ -91,5 +118,7 @@ public class User {
 				phoneNumber, password, quota, threshold, email);
 	}
 
-	
+	public static String generateRandomCode() {
+		return new BigInteger(130, random).toString(32);
+	}
 }
