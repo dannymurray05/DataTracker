@@ -1,9 +1,10 @@
-package com.example.datatrackerclient;
+package datatrackerclient;
 
 
 
-import com.example.datatrackerclient.servercommunications.ServerRequestHandler;
+import com.example.datatrackerclient.R;
 
+import datatrackerclient.servercommunications.ServerRequestHandler;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

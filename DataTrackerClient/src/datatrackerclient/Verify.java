@@ -1,6 +1,8 @@
-package com.example.datatrackerclient;
+package datatrackerclient;
 
 
+
+import com.example.datatrackerclient.R;
 
 import android.app.Activity;
 import android.content.Intent;

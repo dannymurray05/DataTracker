@@ -4,31 +4,52 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import datatracker.datamangement.DataHandler;
 import datatracker.entities.UsageHistory;
 import datatracker.usermanagement.UserHandler;
 
-
-/*@Configuration
-@ComponentScan
-@EnableAutoConfiguration
-@SpringBootApplication*/
 @Component
 @RestController
 public class RESTHandler {
-	
-	@RequestMapping("/new_user")
+
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public String handleException(Exception e) {
+    	System.out.print(e.getMessage());
+    	return e.getMessage();
+    }
+    
+    
+    public Date processDateStr(String dateStr) {
+    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    	Date date = null;
+		try {
+			date = formatter.parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return date;
+		}
+		
+		return date;
+    }
+
+	@RequestMapping(value = "/new_user", method = RequestMethod.POST)
 	public ResponseEntity<String> registerUser(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "password") String password, @RequestParam(value = "email") String email) {
 		UserHandler.RegistrationError error = UserHandler.INSTANCE.registerUser(phoneNumber, password, email);
@@ -103,21 +124,6 @@ public class RESTHandler {
         }
 
         return usageHistory;
-    }
-    
-    
-    
-    public Date processDateStr(String dateStr) {
-    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    	Date date = null;
-		try {
-			date = formatter.parse(dateStr);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return date;
-		}
-		
-		return date;
     }
     
 	/*@RequestMapping("/login")
