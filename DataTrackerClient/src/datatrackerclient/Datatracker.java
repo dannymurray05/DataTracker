@@ -4,15 +4,22 @@ import com.example.datatrackerclient.R;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+import android.widget.Toast;
 
 public class Datatracker extends Activity {
 
+	
+	//DatePicker getdate;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_datatracker);
+		//getdate = (DatePicker) findViewById(R.id.billing_date);
 		
 		final TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
 		tabHost.setup();
@@ -29,4 +36,12 @@ public class Datatracker extends Activity {
 		tabHost.addTab(spec2);
 	}
 
+/*	public void SetCycle(View v)
+	{
+		int day = getdate.getDayOfMonth();
+		int month = getdate.getMonth() + 1;
+		int year = getdate.getYear();
+		Toast.makeText(getBaseContext(), "Date:"+day+"/"+month+"/"+year, Toast.LENGTH_LONG).show();
+	} */
+	
 }

@@ -1,37 +1,45 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/button1"
-        android:layout_marginTop="43dp"
-        android:onClick="Verify"
-        android:text="Sign-In as User" />
-
+     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="@drawable/purple1"
+     >
+		
+		<TextView
+		    android:id="@+id/text1"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:layout_alignParentTop="true"
+		    android:gravity="center"
+		    android:layout_marginTop="70dp"
+		    android:text="Data Tracker"
+		    android:textSize="25dp"
+		    android:textColor="#FFFFFF" />
+    
     <Button
         android:id="@+id/button1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="44dp"
-        android:onClick="Verify"
-        android:text="Sign In as Admin" />
+        android:layout_below="@+id/text1"
+        android:gravity="center"
+        android:layout_marginLeft="40dp"
+		android:layout_marginRight="40dp"
+        android:layout_marginTop="100dp"
+        android:text="Sign-in as Admin"
+        android:width="200dp" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+     <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="48dp"
-        android:layout_marginLeft="100dp"
-        android:text="DATA TRACKER"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
+        android:layout_below="@+id/button1"
+        android:layout_marginLeft="40dp"
+		android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="Sign-in as User"
+        android:width="200dp" />
+    
+    
 </RelativeLayout>
