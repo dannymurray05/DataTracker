@@ -1,4 +1,4 @@
-package datatracker.datamangement;
+package datatrackerserver.entitymanagement;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,12 +10,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
-import datatracker.entities.Device;
-import datatracker.entities.UsageHistory;
-import datatracker.entities.UsageHistoryId;
-import datatracker.entities.User;
-import datatracker.repositories.UsageHistoryRepository;
-import datatracker.repositories.UserRepository;
+import datatrackerserver.entities.Device;
+import datatrackerserver.entities.UsageHistory;
+import datatrackerserver.entities.UsageHistoryId;
+import datatrackerserver.entities.User;
+import datatrackerserver.repositories.UsageHistoryRepository;
+import datatrackerserver.repositories.UserRepository;
 
 @Configuration
 @EnableAutoConfiguration

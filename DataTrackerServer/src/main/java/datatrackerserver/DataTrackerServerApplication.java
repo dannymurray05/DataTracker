@@ -1,4 +1,4 @@
-package datatracker;
+package datatrackerserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -7,8 +7,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import datatracker.datamangement.DataHandler;
-import datatracker.usermanagement.UserHandler;
+import datatrackerserver.entitymanagement.DataHandler;
+import datatrackerserver.entitymanagement.DeviceHandler;
+import datatrackerserver.entitymanagement.UserHandler;
 
 
 @Configuration
@@ -20,6 +21,7 @@ public class DataTrackerServerApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(DataTrackerServerApplication.class, args);
         UserHandler.INSTANCE.setApplicationContext(context);
+        DeviceHandler.INSTANCE.setApplicationContext(context);
         DataHandler.INSTANCE.setApplicationContext(context);
     }
 }

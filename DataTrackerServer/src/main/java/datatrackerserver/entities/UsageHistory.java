@@ -1,4 +1,4 @@
-package datatracker.entities;
+package datatrackerserver.entities;
 
 import java.util.Date;
 

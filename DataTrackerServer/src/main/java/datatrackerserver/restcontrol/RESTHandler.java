@@ -1,4 +1,4 @@
-package datatracker.restcontrol;
+package datatrackerserver.restcontrol;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,9 +19,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import datatracker.datamangement.DataHandler;
-import datatracker.entities.UsageHistory;
-import datatracker.usermanagement.UserHandler;
+import datatrackerserver.entities.Device;
+import datatrackerserver.entities.UsageHistory;
+import datatrackerserver.entities.User;
+import datatrackerserver.entitymanagement.DataHandler;
+import datatrackerserver.entitymanagement.DeviceHandler;
+import datatrackerserver.entitymanagement.UserHandler;
+import datatrackerserver.entitymanagement.DeviceHandler.DeviceSettings;
+import datatrackerserver.entitymanagement.UserHandler.UserSettings;
 
 @Component
 @RestController
@@ -59,6 +64,33 @@ public class RESTHandler {
 		}
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
+	}
+
+	@RequestMapping(value = "/register_device", method = RequestMethod.POST)
+	public ResponseEntity<String> registerDevice(@RequestParam(value="phoneNumber") String phoneNumber,
+			@RequestParam(value = "userPhoneNumber") String userPhoneNumber) {
+		boolean deviceCreated = DeviceHandler.INSTANCE.registerDevice(phoneNumber, userPhoneNumber);
+		
+		if(deviceCreated) {
+			return new ResponseEntity<String>("Device created and request sent to user", HttpStatus.CREATED);
+		}
+		else {
+			return new ResponseEntity<String>("New user request sent", HttpStatus.CREATED);
+		}
+	}
+
+	@RequestMapping(value = "/validate_device", method = RequestMethod.POST)
+	public ResponseEntity<String> registerDevice(@RequestParam(value="phoneNumber") String phoneNumber,
+			@RequestParam(value = "userPhoneNumber") String userPhoneNumber,
+			@RequestParam(value = "code") String code) {
+		boolean validated = DeviceHandler.INSTANCE.validateDevice(phoneNumber, userPhoneNumber, code);
+		
+		if(validated) {
+			return new ResponseEntity<String>("Device validated", HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>("Invalide validation code", HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@RequestMapping(value = "/log_data", method = RequestMethod.POST)
@@ -111,7 +143,7 @@ public class RESTHandler {
 			return null;
 		}
 
-		if(!UserHandler.INSTANCE.validateUserAndPassword(phoneNumber, password)) {
+		if(UserHandler.INSTANCE.validateUserAndPassword(phoneNumber, password) == null) {
         	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return null;
 		}
@@ -126,6 +158,59 @@ public class RESTHandler {
         return usageHistory;
     }
 
+    @RequestMapping(value = "/request_device_settings", method = RequestMethod.GET)
+    public Device requestDeviceSettings(@RequestParam(value="phoneNumber") String phoneNumber) {
+        Device device = DeviceHandler.INSTANCE.getDeviceSettings(phoneNumber);
+
+        return device;
+    }
+
+    
+    @RequestMapping(value = "/request_user_settings", method = RequestMethod.GET)
+    public User requestUserSettings(@RequestParam(value="phoneNumber") String phoneNumber,
+    		@RequestParam(value="password") String password) {
+    	User user = UserHandler.INSTANCE.getUserSettings(phoneNumber, password);
+
+        return user;
+    }
+
+    @RequestMapping(value = "/update_device_setting", method = RequestMethod.POST)
+    public ResponseEntity<String> updateDeviceSetting(@RequestParam(value="phoneNumber") String phoneNumber,
+    		@RequestParam(value="setting") String settingStr, @RequestParam(value="value") String value) {
+    	DeviceSettings setting = DeviceSettings.valueOf(settingStr);
+    	if(setting == null) {
+    		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+    	}
+
+        boolean success = DeviceHandler.INSTANCE.setDeviceSetting(phoneNumber, setting, value);
+
+        if(success) {
+        	return new ResponseEntity<String>(HttpStatus.OK);
+        }
+        else {
+        	return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    @RequestMapping(value = "/update_user_setting", method = RequestMethod.POST)
+    public ResponseEntity<String> updateUserSetting(@RequestParam(value="phoneNumber") String phoneNumber,
+    		@RequestParam(value="password") String password,
+    		@RequestParam(value="setting") String settingStr, @RequestParam(value="value") String value) {
+    	UserSettings setting = UserSettings.valueOf(settingStr);
+    	if(setting == null) {
+    		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+    	}
+
+        boolean success = UserHandler.INSTANCE.setUserSetting(phoneNumber, password, setting, value);
+
+        if(success) {
+        	return new ResponseEntity<String>(HttpStatus.OK);
+        }
+        else {
+        	return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 	@RequestMapping(value = "/validate_email", method = RequestMethod.POST)
 	public ResponseEntity<String> validateEmail(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "code") String code) {
@@ -135,7 +220,7 @@ public class RESTHandler {
 			return new ResponseEntity<String>("Invalid code", HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<String>(HttpStatus.CREATED);
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
     
 	/*@RequestMapping("/login")

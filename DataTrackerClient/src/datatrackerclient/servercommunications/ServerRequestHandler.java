@@ -10,7 +10,7 @@ import datatrackerclient.servercommunications.requests.LogDataRequest;
 import datatrackerclient.servercommunications.requests.NewUserRequest;
 
 public class ServerRequestHandler {
-	private static Logger serverRequestLogger = Logger.getLogger("ServerRequestHandlerLogger");
+	//private static Logger serverRequestLogger = Logger.getLogger("ServerRequestHandlerLogger");
     public static final String TAG = ServerRequestHandler.class
             .getSimpleName();
 	

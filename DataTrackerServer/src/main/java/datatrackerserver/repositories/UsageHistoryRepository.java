@@ -1,4 +1,4 @@
-package datatracker.repositories;
+package datatrackerserver.repositories;
 
 import java.util.Date;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import datatracker.entities.UsageHistory;
-import datatracker.entities.UsageHistoryId;
+import datatrackerserver.entities.UsageHistory;
+import datatrackerserver.entities.UsageHistoryId;
 
 @Component
 @EnableAutoConfiguration
