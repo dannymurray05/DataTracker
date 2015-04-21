@@ -93,4 +93,6 @@ public class Device {
 		this.phoneNumber = phoneNumber;
 		this.user = user;
 	}
+	
+	protected Device() {}
 }

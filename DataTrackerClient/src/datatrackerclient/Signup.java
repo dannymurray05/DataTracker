@@ -2,17 +2,22 @@ package datatrackerclient;
 
 
 
-import com.example.datatrackerclient.R;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import datatrackerclient.servercommunications.ServerRequestHandler;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.android.volley.Response.Listener;
+import com.example.datatrackerclient.R;
+
+import datatrackerclient.servercommunications.DataTrackerRequest;
+import datatrackerclient.servercommunications.ServerRequestHandler;
 
 
 public class Signup extends Activity {
@@ -41,19 +46,16 @@ public class Signup extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				///ServerRequestHandler.newUser(phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
-				
-					
-				
+
 				//phone_number.getText().toString()
-				Runnable registerUser = new Runnable() {
-					public void run() {
-						ServerRequestHandler.newUser(phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
-					}
-				}; 
-				Thread registerUserThread = new Thread(registerUser);
-				registerUserThread.start();
 				
-	
+                ServerRequestHandler.registerUser(new Listener<String>() {
+					@Override
+					public void onResponse(String arg0) {
+						Logger.getAnonymousLogger().log(Level.INFO, arg0);
+					}
+                }, new DataTrackerRequest.GenericErrorListener(),
+                        phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
 			}
 		}
 		);

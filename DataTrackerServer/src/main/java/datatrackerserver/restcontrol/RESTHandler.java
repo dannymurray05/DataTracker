@@ -54,7 +54,7 @@ public class RESTHandler {
 		return date;
     }
 
-	@RequestMapping(value = "/new_user", method = RequestMethod.POST)
+	@RequestMapping(value = "/register_user", method = RequestMethod.POST)
 	public ResponseEntity<String> registerUser(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "password") String password, @RequestParam(value = "email") String email) {
 		UserHandler.RegistrationError error = UserHandler.INSTANCE.registerUser(phoneNumber, password, email);
@@ -64,6 +64,18 @@ public class RESTHandler {
 		}
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
+	}
+
+	@RequestMapping(value = "/validate_email", method = RequestMethod.POST)
+	public ResponseEntity<String> validateEmail(@RequestParam(value="phoneNumber") String phoneNumber,
+			@RequestParam(value = "code") String code) {
+		boolean error = UserHandler.INSTANCE.validateEmail(phoneNumber, code);
+		
+		if(error) {
+			return new ResponseEntity<String>("Invalid code", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/register_device", method = RequestMethod.POST)
@@ -80,7 +92,7 @@ public class RESTHandler {
 	}
 
 	@RequestMapping(value = "/validate_device", method = RequestMethod.POST)
-	public ResponseEntity<String> registerDevice(@RequestParam(value="phoneNumber") String phoneNumber,
+	public ResponseEntity<String> validateDevice(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "userPhoneNumber") String userPhoneNumber,
 			@RequestParam(value = "code") String code) {
 		boolean validated = DeviceHandler.INSTANCE.validateDevice(phoneNumber, userPhoneNumber, code);
@@ -110,8 +122,8 @@ public class RESTHandler {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-    @RequestMapping(value = "/request_data", method = RequestMethod.GET)
-    public @ResponseBody List<UsageHistory> requestData(@RequestParam(value="phoneNumber") String phoneNumber,
+    @RequestMapping(value = "/request_device_data", method = RequestMethod.GET)
+    public @ResponseBody List<UsageHistory> requestDeviceData(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
     		HttpServletResponse response) {
 		Date beginDate = processDateStr(beginDateStr);
@@ -210,18 +222,6 @@ public class RESTHandler {
         	return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
         }
     }
-
-	@RequestMapping(value = "/validate_email", method = RequestMethod.POST)
-	public ResponseEntity<String> validateEmail(@RequestParam(value="phoneNumber") String phoneNumber,
-			@RequestParam(value = "code") String code) {
-		boolean error = UserHandler.INSTANCE.validateEmail(phoneNumber, code);
-		
-		if(error) {
-			return new ResponseEntity<String>("Invalid code", HttpStatus.BAD_REQUEST);
-		}
-
-		return new ResponseEntity<String>(HttpStatus.OK);
-	}
     
 	/*@RequestMapping("/login")
 	public String userLogin(@RequestParam(value="phoneNumber") String phoneNumber,
