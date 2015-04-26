@@ -8,6 +8,10 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="libs/volley.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DataTrackerServer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataTrackerServer">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="DataTrackerServer/build/libs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

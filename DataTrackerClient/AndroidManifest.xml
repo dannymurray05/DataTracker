@@ -6,8 +6,8 @@
 			>
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="21" />
+        android:minSdkVersion="11"
+        android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -42,13 +42,13 @@
             android:screenOrientation="portrait" >
         </activity>
         
-        <receiver android:name="datatrackerclient.Broadcast">
+        <receiver android:name="datatrackerclient.mobiledatamanagment.NetworkChangeReceiver">
       	<intent-filter>
         	 <action android:name="android.net.conn.CONNECTIVITY_CHANGE">
      		 </action>
       	</intent-filter>
    		</receiver>
-   		<service android:name="datatrackerclient.UsageService"
+   		<service android:name="datatrackerclient.mobiledatamanagment.DataTrackingManager"
          android:enabled="true"/>    
    
         

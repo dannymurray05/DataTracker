@@ -1,10 +1,7 @@
 package datatrackerserver.restcontrol;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,8 +21,8 @@ import datatrackerserver.entities.UsageHistory;
 import datatrackerserver.entities.User;
 import datatrackerserver.entitymanagement.DataHandler;
 import datatrackerserver.entitymanagement.DeviceHandler;
-import datatrackerserver.entitymanagement.UserHandler;
 import datatrackerserver.entitymanagement.DeviceHandler.DeviceSettings;
+import datatrackerserver.entitymanagement.UserHandler;
 import datatrackerserver.entitymanagement.UserHandler.UserSettings;
 
 @Component
@@ -38,20 +35,6 @@ public class RESTHandler {
     public String handleException(Exception e) {
     	System.out.print(e.getMessage());
     	return e.getMessage();
-    }
-    
-    
-    public Date processDateStr(String dateStr) {
-    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    	Date date = null;
-		try {
-			date = formatter.parse(dateStr);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return date;
-		}
-		
-		return date;
     }
 
 	@RequestMapping(value = "/register_user", method = RequestMethod.POST)
@@ -108,7 +91,7 @@ public class RESTHandler {
 	@RequestMapping(value = "/log_data", method = RequestMethod.POST)
 	public ResponseEntity<String> logData(@RequestParam(value="phoneNumber") String phoneNumber, @RequestParam(value="date") String dateStr,
 			@RequestParam(value="hour") String hour, @RequestParam(value="bytes") String bytes) {
-		Date date = processDateStr(dateStr);
+		Date date = DataTrackerConstants.stringToDate(dateStr);
 		if(date == null) {
 			return new ResponseEntity<String>("Invalid date format", HttpStatus.BAD_REQUEST);
 		}
@@ -126,8 +109,8 @@ public class RESTHandler {
     public @ResponseBody List<UsageHistory> requestDeviceData(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
     		HttpServletResponse response) {
-		Date beginDate = processDateStr(beginDateStr);
-		Date endDate = processDateStr(endDateStr);
+		Date beginDate = DataTrackerConstants.stringToDate(beginDateStr);
+		Date endDate = DataTrackerConstants.stringToDate(endDateStr);
 		if(beginDate == null || endDate == null) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return null;
@@ -148,8 +131,8 @@ public class RESTHandler {
     		@RequestParam(value="password") String password,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
     		HttpServletResponse response) {
-		Date beginDate = processDateStr(beginDateStr);
-		Date endDate = processDateStr(endDateStr);
+		Date beginDate = DataTrackerConstants.stringToDate(beginDateStr);
+		Date endDate = DataTrackerConstants.stringToDate(endDateStr);
 		if(beginDate == null || endDate == null) {
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return null;
