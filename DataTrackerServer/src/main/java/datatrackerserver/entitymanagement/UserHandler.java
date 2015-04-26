@@ -5,13 +5,16 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import datatrackerserver.email.EmailManager;
 import datatrackerserver.entities.User;
 import datatrackerserver.repositories.UserRepository;
+import datatrackerserver.security.SecurityManager;
 
 @Configuration
 @EnableAutoConfiguration
 public class UserHandler {
-	public static final UserHandler INSTANCE = new UserHandler();
+	public static final long DEFAULT_QUOTA = (long) Math.pow(2, 30); //1GB
+	public static final long DEFAULT_THRESHOLD = (long) (DEFAULT_QUOTA * .90); //90% of quota
 	
 	@Autowired
 	private ApplicationContext appContext;
@@ -63,10 +66,16 @@ public class UserHandler {
 			return RegistrationError.EMAIL_ALREADY_EXISTS;
 		}
 		else {
-			newUser = new User(phoneNumber, password, email, 0, 0);
+			newUser = new User(phoneNumber, password, email,
+					DEFAULT_QUOTA, DEFAULT_THRESHOLD);
+			newUser.setValidationCode(SecurityManager.generateRandomCode());
+			appContext.getBean(EmailManager.class).sendEmailConfirmationRequest(
+					email, phoneNumber, newUser.getValidationCode());
+			
 			userRepo.save(newUser);
+			
 			//create the corresponding device for this user
-			DeviceHandler.INSTANCE.registerDevice(phoneNumber, newUser);
+			appContext.getBean(DeviceHandler.class).registerDevice(phoneNumber, newUser);
 		}
 		
 		//debug

@@ -18,11 +18,8 @@ import datatrackerserver.security.SecurityManager;
 @Configuration
 @EnableAutoConfiguration
 public class DeviceHandler {
-	public static final DeviceHandler INSTANCE = new DeviceHandler();
-
 	@Autowired
 	private ApplicationContext appContext;
-
 
 	public void setApplicationContext(ApplicationContext appContext) {
 		this.appContext = appContext;
@@ -76,7 +73,8 @@ public class DeviceHandler {
 		}
 		
 		device.setValidationCode(SecurityManager.generateRandomCode());
-		EmailManager.INSTANCE.sendDeviceConfirmationRequest(user.getEmail(), userPhoneNumber, phoneNumber, device.getValidationCode());
+		appContext.getBean(EmailManager.class).sendDeviceConfirmationRequest(
+				user.getEmail(), userPhoneNumber, phoneNumber, device.getValidationCode());
 		deviceRepo.save(device);
 		
 		return deviceCreated;

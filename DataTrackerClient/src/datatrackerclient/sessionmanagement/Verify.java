@@ -1,9 +1,10 @@
-package datatrackerclient;
+package datatrackerclient.sessionmanagement;
 
 
 
 import com.example.datatrackerclient.R;
 
+import datatrackerclient.DataTracker;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +43,7 @@ public class Verify extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-				Intent correct_user = new Intent(getApplicationContext(), Datatracker.class);
+				Intent correct_user = new Intent(getApplicationContext(), DataTracker.class);
 							
 				startActivity(correct_user);
 			}

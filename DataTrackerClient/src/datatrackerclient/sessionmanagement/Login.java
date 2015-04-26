@@ -1,4 +1,4 @@
-package datatrackerclient;
+package datatrackerclient.sessionmanagement;
 
 
 import android.app.Activity;
@@ -9,16 +9,13 @@ import android.widget.Button;
 //import android.widget.Toast;
 //import android.net.http.AndroidHttpClient;
 
-
-
 import com.example.datatrackerclient.R;
 
 import datatrackerclient.mobiledatamanagment.DataTrackingManager;
-import datatrackerclient.servercommunications.ServerRequestHandler;
 
 
 public class Login extends Activity {
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{

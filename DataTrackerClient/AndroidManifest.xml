@@ -21,7 +21,7 @@
         android:theme="@style/AppTheme"
          >
         <activity
-            android:name="datatrackerclient.Login"
+            android:name="datatrackerclient.sessionmanagement.Login"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -30,14 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="datatrackerclient.Verify"
+        <activity android:name="datatrackerclient.sessionmanagement.Verify"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="datatrackerclient.Signup"
+        <activity android:name="datatrackerclient.sessionmanagement.Signup"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="datatrackerclient.Datatracker"
+            android:name="datatrackerclient.DataTracker"
             android:label="@string/title_activity_datatracker"
             android:screenOrientation="portrait" >
         </activity>

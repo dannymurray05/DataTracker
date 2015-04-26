@@ -20,8 +20,6 @@ import datatrackerserver.repositories.UserRepository;
 @Configuration
 @EnableAutoConfiguration
 public class DataHandler {
-	public static final DataHandler INSTANCE = new DataHandler();
-	
 	@Autowired
 	private ApplicationContext appContext;
 

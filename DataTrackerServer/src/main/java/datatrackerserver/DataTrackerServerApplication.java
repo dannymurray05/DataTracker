@@ -20,8 +20,9 @@ public class DataTrackerServerApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(DataTrackerServerApplication.class, args);
-        UserHandler.INSTANCE.setApplicationContext(context);
-        DeviceHandler.INSTANCE.setApplicationContext(context);
-        DataHandler.INSTANCE.setApplicationContext(context);
+        //context.getBean(UserHandler.class).setApplicationContext(context);
+        //context.getBean(DeviceHandler.class).setApplicationContext(context);
+        //context.getBean(DataHandler.class).setApplicationContext(context);
+        //context.getBean(RESTHandler.class).setApplicationContext(context);
     }
 }

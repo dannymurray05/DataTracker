@@ -3,21 +3,20 @@ package datatrackerserver.email;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EmailManager {
+	private final JavaMailSender mailSender;
 
-	public static final EmailManager INSTANCE = new EmailManager();
-
-	private final String hostAddress;
-	
-
-	protected EmailManager() {
-		hostAddress = "dannymurray05@gmail.com";
+	@Autowired
+	public EmailManager(JavaMailSender mailSender) {
+		this.mailSender = mailSender;
 	}
-
 	
 	public boolean sendEmailConfirmationRequest(final String recipient, final String userPhoneNumber,
 			final String confirmationCode) {
@@ -44,31 +43,24 @@ public class EmailManager {
 	}
 
 	public boolean sendEmail(final String recipient, final String subjectStr, final String messageStr) {
-		JavaMailSenderImpl sender = new JavaMailSenderImpl();
-		sender.setHost(hostAddress);
-		
-		MimeMessage message = sender.createMimeMessage();
+		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		try {
 			helper.setTo(recipient);
-			helper.setText(messageStr);
 			helper.setSubject(subjectStr);
+			helper.setText(messageStr);
 		} catch (MessagingException e) {
 			e.printStackTrace();
 			return false;
 		}
 		
 		try {
-			sender.send(message);
+			mailSender.send(message);
 		} catch (MailException e) {
 			e.printStackTrace();
 			return false;
 		}
 
 		return true;
-	}
-	
-	public String getHostAddress() {
-		return hostAddress;
 	}
 }
