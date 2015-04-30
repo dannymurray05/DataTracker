@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 
 import datatrackerserver.email.EmailManager;
 import datatrackerserver.entities.Device;
-import datatrackerserver.entities.User;
+import datatrackerserver.entities.Account;
 import datatrackerserver.repositories.DeviceRepository;
-import datatrackerserver.repositories.UserRepository;
+import datatrackerserver.repositories.AccountRepository;
 import datatrackerserver.security.SecurityManager;
 
 @Configuration
@@ -35,37 +35,37 @@ public class DeviceHandler {
 	}
 
 	/**
-	 * Only to be used for registering the device of a new user.
+	 * Only to be used for registering the device of a new account.
 	 * @param phoneNumber
-	 * @param user
+	 * @param account
 	 * @return true if the device was created, false otherwise.
 	 */
-	public boolean registerDevice(String phoneNumber, User user) {
+	public boolean registerDevice(String phoneNumber, Account account) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);
 
 		if(device != null) {
-			System.out.println("Device already exists! Modifying controlling user!");
-			device.setUser(user);
+			System.out.println("Device already exists! Modifying controlling account!");
+			device.setAccount(account);
 			deviceRepo.save(device);
 			return false;
 		}
 		else {
-			device = new Device(phoneNumber, user);
+			device = new Device(phoneNumber, account);
 			deviceRepo.save(device);
 			return true;
 		}
 	}
 	
-	public boolean registerDevice(String phoneNumber, String userPhoneNumber) {
+	public boolean registerDevice(String phoneNumber, String accountPhoneNumber) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);
-        UserRepository userRepo = appContext.getBean(UserRepository.class);
-        User user = userRepo.findOne(userPhoneNumber);
+        AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+        Account account = accountRepo.findOne(accountPhoneNumber);
 
         boolean deviceCreated = false;
 		if(device != null) {
-			Logger.getAnonymousLogger().log(Level.INFO, "Device already exists! Requesting validation from user to modify.");
+			Logger.getAnonymousLogger().log(Level.INFO, "Device already exists! Requesting validation from account to modify.");
 		}
 		else {
 			device = new Device(phoneNumber);
@@ -74,23 +74,23 @@ public class DeviceHandler {
 		
 		device.setValidationCode(SecurityManager.generateRandomCode());
 		appContext.getBean(EmailManager.class).sendDeviceConfirmationRequest(
-				user.getEmail(), userPhoneNumber, phoneNumber, device.getValidationCode());
+				account.getEmail(), accountPhoneNumber, phoneNumber, device.getValidationCode());
 		deviceRepo.save(device);
 		
 		return deviceCreated;
 	}
 
-	public boolean validateDevice(String phoneNumber, String userPhoneNumber, String code) {
+	public boolean validateDevice(String phoneNumber, String accountPhoneNumber, String code) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);
-		UserRepository userRepo = appContext.getBean(UserRepository.class);
-		User user = userRepo.findOne(userPhoneNumber);
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account account = accountRepo.findOne(accountPhoneNumber);
 
 		boolean deviceValidated = false;
 
 		if(device.getValidationCode().equals(code)) {
 			//validated
-			device.setUser(user);
+			device.setAccount(account);
 			deviceRepo.save(device);
 			deviceValidated = true;
 		}

@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 import datatrackerserver.entities.Device;
 import datatrackerserver.entities.UsageHistory;
 import datatrackerserver.entities.UsageHistoryId;
-import datatrackerserver.entities.User;
+import datatrackerserver.entities.Account;
 import datatrackerserver.repositories.UsageHistoryRepository;
-import datatrackerserver.repositories.UserRepository;
+import datatrackerserver.repositories.AccountRepository;
 
 @Configuration
 @EnableAutoConfiguration
@@ -85,12 +85,12 @@ public class DataHandler {
 		return usageHistoryRange;
 	}
 
-	public List<UsageHistory> getUserUsageData(String phoneNumber, Date beginDate, Date endDate) {
-		UserRepository userRepo = appContext.getBean(UserRepository.class);
+	public List<UsageHistory> getAccountUsageData(String phoneNumber, Date beginDate, Date endDate) {
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
 		UsageHistoryRepository usageHistoryRepo = appContext.getBean(UsageHistoryRepository.class);
 		
-		User user = userRepo.findOne(phoneNumber);
-		Set<Device> devices = user.getDevices();
+		Account account = accountRepo.findOne(phoneNumber);
+		Set<Device> devices = account.getDevices();
 		
 		List<UsageHistory> usageHistoryRange = new ArrayList<UsageHistory>();
 		for(Device device : devices) {

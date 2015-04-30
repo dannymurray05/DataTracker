@@ -18,9 +18,9 @@ public class EmailManager {
 		this.mailSender = mailSender;
 	}
 	
-	public boolean sendEmailConfirmationRequest(final String recipient, final String userPhoneNumber,
+	public boolean sendEmailConfirmationRequest(final String recipient, final String accountPhoneNumber,
 			final String confirmationCode) {
-		String confirmationURL = "http://192.168.1.2:8080/validate_email?phoneNumber=" + userPhoneNumber
+		String confirmationURL = "http://192.168.1.2:8080/validate_email?phoneNumber=" + accountPhoneNumber
 				+ "&code=" + confirmationCode;
 		String subject = "DataTracker - confirm email request";
 		String message = "To confirm your email please click the link below:\n\n"
@@ -29,9 +29,9 @@ public class EmailManager {
 		return sendEmail(recipient, subject, message);
 	}
 
-	public boolean sendDeviceConfirmationRequest(final String recipient, final String userPhoneNumber,
+	public boolean sendDeviceConfirmationRequest(final String recipient, final String accountPhoneNumber,
 			final String devicePhoneNumber, final String confirmationCode) {
-		String confirmationURL = "http://192.168.1.2:8080/validate_device?phoneNumber=" + userPhoneNumber
+		String confirmationURL = "http://192.168.1.2:8080/validate_device?phoneNumber=" + accountPhoneNumber
 				+ "&devicePhoneNumber=" + devicePhoneNumber
 				+ "&code=" + confirmationCode;
 		String subject = "DataTracker - confirm device request (" + devicePhoneNumber + ")";

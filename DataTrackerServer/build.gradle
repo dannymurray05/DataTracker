@@ -36,6 +36,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-ws")
     compile("org.springframework.boot:spring-boot-starter-jdbc")
     compile("org.springframework.boot:spring-boot-starter-data-rest")
+    compile("org.springframework.boot:spring-boot-starter-mail")
     compile("org.springframework:spring-context-support")
     compile("javax.mail:mail:1.4.7")
     compile("com.h2database:h2")

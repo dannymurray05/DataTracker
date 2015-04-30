@@ -45,11 +45,11 @@ public class Signup extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				///ServerRequestHandler.newUser(phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
+				///ServerRequestHandler.newAccount(phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
 
 				//phone_number.getText().toString()
 				
-                ServerRequestHandler.registerUser(new Listener<String>() {
+                ServerRequestHandler.registerAccount(new Listener<String>() {
 					@Override
 					public void onResponse(String arg0) {
 						Logger.getAnonymousLogger().log(Level.INFO, arg0);

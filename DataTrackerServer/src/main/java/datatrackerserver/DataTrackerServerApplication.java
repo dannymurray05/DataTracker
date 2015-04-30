@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import datatrackerserver.entitymanagement.DataHandler;
 import datatrackerserver.entitymanagement.DeviceHandler;
-import datatrackerserver.entitymanagement.UserHandler;
+import datatrackerserver.entitymanagement.AccountHandler;
 
 
 @Configuration
@@ -20,7 +20,7 @@ public class DataTrackerServerApplication {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(DataTrackerServerApplication.class, args);
-        //context.getBean(UserHandler.class).setApplicationContext(context);
+        //context.getBean(AccountHandler.class).setApplicationContext(context);
         //context.getBean(DeviceHandler.class).setApplicationContext(context);
         //context.getBean(DataHandler.class).setApplicationContext(context);
         //context.getBean(RESTHandler.class).setApplicationContext(context);

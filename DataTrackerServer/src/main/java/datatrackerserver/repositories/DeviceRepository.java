@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import datatrackerserver.entities.Device;
-import datatrackerserver.entities.User;
+import datatrackerserver.entities.Account;
 
 @Component
 @EnableAutoConfiguration
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, String>  {
-	List<Device> findByUser(User user);
+	List<Device> findByAccount(Account account);
 }

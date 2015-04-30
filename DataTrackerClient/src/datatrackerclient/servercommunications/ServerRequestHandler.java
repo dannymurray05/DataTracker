@@ -20,9 +20,9 @@ public class ServerRequestHandler {
 		NetworkController.getInstance().addToRequestQueue(request, request.getURL());
 	}
 			
-	public static void registerUser(Listener<String> listener, ErrorListener errorListener,
+	public static void registerAccount(Listener<String> listener, ErrorListener errorListener,
 			String phoneNumber, String password, String email) {
-		makeRequest(RequestType.REGISTER_USER, listener, errorListener,
+		makeRequest(RequestType.REGISTER_ACCOUNT, listener, errorListener,
 				phoneNumber, password, email);
 	}
 	
@@ -32,15 +32,15 @@ public class ServerRequestHandler {
 	}
 	
 	public static void registerDevice(Listener<String> listener, ErrorListener errorListener,
-			String phoneNumber, String userPhoneNumber) {
+			String phoneNumber, String accountPhoneNumber) {
 		makeRequest(RequestType.REGISTER_DEVICE, listener, errorListener,
-				phoneNumber, userPhoneNumber);
+				phoneNumber, accountPhoneNumber);
 	}
 	
 	public static void validateDevice(Listener<String> listener, ErrorListener errorListener,
-			String phoneNumber, String userPhoneNumber, String code) {
+			String phoneNumber, String accountPhoneNumber, String code) {
 		makeRequest(RequestType.VALIDATE_DEVICE, listener, errorListener, phoneNumber,
-				userPhoneNumber, code);
+				accountPhoneNumber, code);
 	}
 
 	public static void logData(Listener<String> listener, ErrorListener errorListener,
@@ -55,9 +55,9 @@ public class ServerRequestHandler {
 				formatDate(beginDate), formatDate(endDate));
 	}
 	
-	public static void requestUserData(Listener<String> listener, ErrorListener errorListener,
+	public static void requestAccountData(Listener<String> listener, ErrorListener errorListener,
 			String phoneNumber, String password, Date beginDate, Date endDate) {
-		makeRequest(RequestType.REQUEST_USER_DATA, listener, errorListener, phoneNumber,
+		makeRequest(RequestType.REQUEST_ACCOUNT_DATA, listener, errorListener, phoneNumber,
 				password, formatDate(beginDate), formatDate(endDate));
 	}
 
@@ -66,21 +66,21 @@ public class ServerRequestHandler {
 		makeRequest(RequestType.REQUEST_DEVICE_SETTINGS, listener, errorListener, phoneNumber);
 	}
 
-	public static void requestUserSettings(Listener<String> listener, ErrorListener errorListener,
-			String phoneNumber, String userPhoneNumber) {
-		makeRequest(RequestType.REQUEST_USER_SETTINGS, listener, errorListener,
-				phoneNumber, userPhoneNumber);
+	public static void requestAccountSettings(Listener<String> listener, ErrorListener errorListener,
+			String phoneNumber, String password) {
+		makeRequest(RequestType.REQUEST_ACCOUNT_SETTINGS, listener, errorListener,
+				phoneNumber, password);
 	}
 
-	public static void updateDeviceSettings(Listener<String> listener, ErrorListener errorListener,
+	public static void updateDeviceSetting(Listener<String> listener, ErrorListener errorListener,
 			String phoneNumber, String setting, String value) {
 		makeRequest(RequestType.UPDATE_DEVICE_SETTING, listener, errorListener,
 				phoneNumber, setting, value);
 	}
 
-	public static void updateUserSettings(Listener<String> listener, ErrorListener errorListener,
+	public static void updateAccountSetting(Listener<String> listener, ErrorListener errorListener,
 			String phoneNumber, String password, String setting, String value) {
-		makeRequest(RequestType.UPDATE_USER_SETTING, listener, errorListener,
+		makeRequest(RequestType.UPDATE_ACCOUNT_SETTING, listener, errorListener,
 				phoneNumber, password, setting, value);
 	}
 

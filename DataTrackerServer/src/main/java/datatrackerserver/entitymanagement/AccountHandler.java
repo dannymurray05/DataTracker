@@ -6,13 +6,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import datatrackerserver.email.EmailManager;
-import datatrackerserver.entities.User;
-import datatrackerserver.repositories.UserRepository;
+import datatrackerserver.entities.Account;
+import datatrackerserver.repositories.AccountRepository;
 import datatrackerserver.security.SecurityManager;
 
 @Configuration
 @EnableAutoConfiguration
-public class UserHandler {
+public class AccountHandler {
 	public static final long DEFAULT_QUOTA = (long) Math.pow(2, 30); //1GB
 	public static final long DEFAULT_THRESHOLD = (long) (DEFAULT_QUOTA * .90); //90% of quota
 	
@@ -27,7 +27,7 @@ public class UserHandler {
 		INVALID_NUMBER("Invalid phone number: Phone number must be 9 digits (including area code)."),
 		INVALID_PASSWORD("Invalid password: The password must be at least 8 characters long and include at least one non-alphanumeric character."),
 		INVALID_EMAIL("Invalid email: Email address must be a valid email address."),
-		USER_ALREADY_EXISTS("User already exists: The phone number given is already in use."),
+		ACCOUNT_ALREADY_EXISTS("Account already exists: The phone number given is already in use."),
 		EMAIL_ALREADY_EXISTS("Email already exists: The email given is already in use."),
 		;
 
@@ -42,78 +42,78 @@ public class UserHandler {
 		}
 	}
 	
-	public static enum UserSettings {
+	public static enum AccountSettings {
 		BILLING_CYCLE_LENGTH,
 		QUOTA,
 		THRESHOLD,
 		;
 	}
 
-	protected UserHandler() {}
+	protected AccountHandler() {}
 
 	//TODO !!!! add all registration/validation mappings and handler functions
 	
-	public RegistrationError registerUser(String phoneNumber, String password, String email) {
-		UserRepository userRepo = appContext.getBean(UserRepository.class);
-		User newUser = userRepo.findOne(phoneNumber);
-		User userByEmail = userRepo.findByEmail(email);
-		if(newUser != null) {
-			System.out.println("User already exists");
-			return RegistrationError.USER_ALREADY_EXISTS;
+	public RegistrationError registerAccount(String phoneNumber, String password, String email) {
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account newAccount = accountRepo.findOne(phoneNumber);
+		Account accountByEmail = accountRepo.findByEmail(email);
+		if(newAccount != null) {
+			System.out.println("Account already exists");
+			return RegistrationError.ACCOUNT_ALREADY_EXISTS;
 		}
-		else if(userByEmail != null) {
+		else if(accountByEmail != null) {
 			System.out.println("Email already exists");
 			return RegistrationError.EMAIL_ALREADY_EXISTS;
 		}
 		else {
-			newUser = new User(phoneNumber, password, email,
+			newAccount = new Account(phoneNumber, password, email,
 					DEFAULT_QUOTA, DEFAULT_THRESHOLD);
-			newUser.setValidationCode(SecurityManager.generateRandomCode());
+			newAccount.setValidationCode(SecurityManager.generateRandomCode());
 			appContext.getBean(EmailManager.class).sendEmailConfirmationRequest(
-					email, phoneNumber, newUser.getValidationCode());
+					email, phoneNumber, newAccount.getValidationCode());
 			
-			userRepo.save(newUser);
+			accountRepo.save(newAccount);
 			
-			//create the corresponding device for this user
-			appContext.getBean(DeviceHandler.class).registerDevice(phoneNumber, newUser);
+			//create the corresponding device for this account
+			appContext.getBean(DeviceHandler.class).registerDevice(phoneNumber, newAccount);
 		}
 		
 		//debug
-		Iterable<User> users = userRepo.findAll();
-		for(User user : users) {
-			System.out.println(user.toString());
+		Iterable<Account> accounts = accountRepo.findAll();
+		for(Account account : accounts) {
+			System.out.println(account.toString());
 		}
 		//end debug
 
 		return null; //success
 	}
 
-	public User validateUserAndPassword(String phoneNumber, String password) {
-		UserRepository userRepo = appContext.getBean(UserRepository.class);
-		User user = userRepo.findOne(phoneNumber);
+	public Account validateAccountAndPassword(String phoneNumber, String password) {
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account account = accountRepo.findOne(phoneNumber);
 		
-		if(user == null) {
+		if(account == null) {
 			return null;
 		}
 
-		if(!password.equals(user.getPassword())) {
+		if(!password.equals(account.getPassword())) {
 			return null;
 		}
 
-		return user;
+		return account;
 	}
 
-	public User getUserSettings(String phoneNumber, String password) {
-		return validateUserAndPassword(phoneNumber, password);
+	public Account getAccountSettings(String phoneNumber, String password) {
+		return validateAccountAndPassword(phoneNumber, password);
 	}
 
-	public boolean setUserSetting(String phoneNumber, String password,
-			UserSettings setting, String value) {
+	public boolean setAccountSetting(String phoneNumber, String password,
+			AccountSettings setting, String value) {
 		boolean success = false;
-		UserRepository userRepo = appContext.getBean(UserRepository.class);
-		User user = validateUserAndPassword(phoneNumber, password);
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account account = validateAccountAndPassword(phoneNumber, password);
 		
-		if(user == null) {
+		if(account == null) {
 			return false;
 		}
 
@@ -130,7 +130,7 @@ public class UserHandler {
 					break;
 				}
 				
-				user.setQuota(quota);
+				account.setQuota(quota);
 				success = true;
 				break;
 			case THRESHOLD:
@@ -144,7 +144,7 @@ public class UserHandler {
 					break;
 				}
 				
-				user.setThreshold(threshold);
+				account.setThreshold(threshold);
 				success = true;
 				break;
 		case BILLING_CYCLE_LENGTH:
@@ -158,7 +158,7 @@ public class UserHandler {
 				break;
 			}
 			
-			user.setBillingCycleLength(cycleLength);
+			account.setBillingCycleLength(cycleLength);
 			success = true;
 			break;
 		default:
@@ -166,19 +166,19 @@ public class UserHandler {
 		}
 		
 		if(success) {
-			userRepo.save(user);
+			accountRepo.save(account);
 		}
 
 		return success;
 	}
 	
 	public boolean validateEmail(String phoneNumber, String code) {
-		UserRepository userRepo = appContext.getBean(UserRepository.class);
-		User newUser = userRepo.findOne(phoneNumber);
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account newAccount = accountRepo.findOne(phoneNumber);
 		
-		if(newUser.getValidationCode().equals(code)) {
-			newUser.setEmailValidated(true);
-			userRepo.save(newUser);
+		if(newAccount.getValidationCode().equals(code)) {
+			newAccount.setEmailValidated(true);
+			accountRepo.save(newAccount);
 			return true;
 		}
 

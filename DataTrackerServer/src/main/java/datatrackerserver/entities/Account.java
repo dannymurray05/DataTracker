@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import datatrackerserver.security.SecurityManager;
 
 @Entity
-public class User {
+public class Account {
 	
 	@Id
 	private String phoneNumber;
@@ -35,12 +35,12 @@ public class User {
 	
 	private int billingCycleLength;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "account")
 	private Set<Device> devices = new HashSet<>();
 
-	protected User() {}
+	protected Account() {}
 	
-	public User(String phoneNumber, String password, String email, long quota, long threshold) {
+	public Account(String phoneNumber, String password, String email, long quota, long threshold) {
 		this.phoneNumber = phoneNumber;
 		this.password = password;
 		this.quota = quota;
@@ -123,7 +123,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return String.format("User[Phone Number='%s', Password='%s', Quota=%d, Threshold=%d, Email='%s']",
+		return String.format("Account[Phone Number='%s', Password='%s', Quota=%d, Threshold=%d, Email='%s']",
 				phoneNumber, password, quota, threshold, email);
 	}
 }

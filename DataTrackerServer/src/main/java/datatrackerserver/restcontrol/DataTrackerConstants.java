@@ -8,7 +8,7 @@ import java.util.Locale;
 public class DataTrackerConstants {
 	public static final String SERVER_ADDRESS = "http://98.255.169.237:8080";
 	public static final String PHONE_NUM_PARAM = "phoneNumber";
-	public static final String USER_PHONE_NUM_PARAM = "userPhoneNumber";
+	public static final String ACCOUNT_PHONE_NUM_PARAM = "accountPhoneNumber";
 	public static final String PASSWORD_PARAM = "password";
 	public static final String EMAIL_PARAM = "email";
 	public static final String CODE_PARAM = "code";

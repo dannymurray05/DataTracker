@@ -13,7 +13,7 @@ public class Device {
 	private String phoneNumber;
 
 	@ManyToOne
-	private User user;
+	private Account account;
 
 	private boolean autoShutoff;
 	
@@ -22,8 +22,9 @@ public class Device {
 	private long threshold;
 
 	/**
-	 * To be used when requesting user. Email with this code will be sent to user and when they confirm it,
-	 * the device will become under that user's control.
+	 * To be used when requesting account membership.
+	 * An email with this code will be sent to account and when they confirm it,
+	 * the device will become under that account's control.
 	 */
 	@JsonIgnore
 	private String validationCode;
@@ -36,12 +37,12 @@ public class Device {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public User getUser() {
-		return user;
+	public Account getAccount() {
+		return account;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public boolean getAutoShutoff() {
@@ -77,7 +78,7 @@ public class Device {
 	}	
 
 	/**
-	 * For first creating device when user has not confirmed device
+	 * For first creating device when account has not confirmed device
 	 * @param phoneNumber
 	 */
 	public Device(String phoneNumber) {
@@ -85,13 +86,13 @@ public class Device {
 	}
 
 	/**
-	 * For when creating for a newly signed up user
+	 * For when creating for a newly signed up account
 	 * @param phoneNumber
-	 * @param user
+	 * @param account
 	 */
-	public Device(String phoneNumber, User user) {
+	public Device(String phoneNumber, Account account) {
 		this.phoneNumber = phoneNumber;
-		this.user = user;
+		this.account = account;
 	}
 	
 	protected Device() {}
