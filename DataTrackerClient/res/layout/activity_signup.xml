@@ -1,7 +1,7 @@
  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/purple1"
+    android:background="@drawable/image1"
      >
 
     <TextView
@@ -14,7 +14,6 @@
 		    android:gravity="center"
 		    android:layout_marginTop="70dp"
 		    android:text="Sign-Up"
-		    android:textColor="#FFFFFF"
 		    android:textSize="25dp" />
 
     <TextView
@@ -27,7 +26,6 @@
         android:layout_marginLeft="60dp"
 		android:layout_marginRight="60dp"
         android:text="Phone Number:"
-        android:textColor="#FFFFFF"
         android:textSize="15dp" />
 
     <EditText
@@ -38,7 +36,6 @@
         android:layout_marginLeft="60dp"
 		android:layout_marginRight="60dp"
         android:layout_below="@+id/phone_text"
-        android:textColor="#FFFFFF"
         android:layout_centerHorizontal="true"
         android:ems="10" />
     
@@ -52,7 +49,6 @@
         android:layout_marginLeft="60dp"
 		android:layout_marginRight="60dp"
         android:text="Password:"
-        android:textColor="#FFFFFF"
         android:textSize="15dp" />
 
     <EditText
@@ -66,7 +62,7 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:inputType="textPassword"
-        android:textColor="#FFFFFF" />
+       />
     
     <TextView
         android:id="@+id/email_text"
@@ -78,7 +74,6 @@
         android:layout_marginLeft="60dp"
 		android:layout_marginRight="60dp"
         android:text="Email Id:"
-        android:textColor="#FFFFFF"
         android:textSize="15dp" />
 
     <EditText
@@ -90,7 +85,6 @@
 		android:layout_marginRight="60dp"
         android:layout_below="@+id/email_text"
         android:layout_centerHorizontal="true"
-        android:textColor="#FFFFFF"
         android:ems="10" />
 
     <Button

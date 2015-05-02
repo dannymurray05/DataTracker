@@ -3,7 +3,7 @@
     android:id="@+id/tabhost"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="@drawable/purple1">
+    android:background="@drawable/image1">
 
     <LinearLayout 
       android:layout_width="match_parent"
@@ -27,6 +27,7 @@
               android:layout_width="match_parent"
               android:layout_height="fill_parent"
               android:orientation="vertical"
+              android:textColorPrimary="#FFFFFF"
                >
 
            
@@ -43,7 +44,7 @@
 				  android:layout_marginRight="20dp"
                   android:text="Billing Cycle:"
                   android:textSize="20dp"
-                  android:textColor="#FFFFFF" />
+                   />
            
                <TextView
                   android:id="@+id/data_textview"
@@ -56,7 +57,7 @@
 				  android:layout_marginRight="20dp"
                   android:text="Data Usage:"
                   android:textSize="20dp"
-                  android:textColor="#FFFFFF" />
+                   />
 
                <SeekBar
                    android:id="@+id/status_bar"
@@ -70,18 +71,123 @@
               
             </RelativeLayout>
             
-           <LinearLayout  		
+           <RelativeLayout  		
           android:id="@+id/tab2"
       	  android:layout_width="wrap_content"
       	  android:layout_height="fill_parent"
       	  android:orientation="vertical"
+      	  android:textColorPrimary="#FFFFFF"
       	   >
-            </LinearLayout>
+
+               <Button
+                   android:id="@+id/add_devices"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="20dp"
+                   android:layout_marginLeft="50dp"
+				   android:layout_marginRight="50dp"
+				   android:layout_centerHorizontal="true"
+                   android:text="Add Devices" />
+ 
+ 
+ 			<Button
+                   android:id="@+id/delete_devices"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="20dp"
+                   android:layout_marginLeft="50dp"
+				   android:layout_marginRight="50dp"
+				   android:layout_below="@+id/add_devices"
+				   android:layout_centerHorizontal="true"
+                   android:text="Delete Devices" />
+               
+
+               
+              <TextView
+                  android:id="@+id/billing_cycle_view"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+    			  android:layout_below="@+id/delete_devices"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginLeft="50dp"
+				  android:layout_marginRight="50dp"
+                  android:text="Billing Cycle:"
+                  android:textSize="20dp"
+                   />
+              
+            <TextView
+                  android:id="@+id/set_cycle"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+    			  android:layout_below="@+id/billing_cycle_view"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginLeft="150dp"
+                  android:layout_marginRight="150dp"
+			      android:hint="Select"
+                  android:textSize="20dp"
+                   />
+              
+             <Button
+                   android:id="@+id/get_cycle"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/set_cycle"
+                   android:layout_marginTop="20dp"
+                   android:layout_marginLeft="50dp"
+				   android:layout_marginRight="50dp"
+				   android:layout_centerHorizontal="true"
+                   android:text="Set (Day of Month)" />
+              
+
+               <TextView
+                  android:id="@+id/quota_view"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+    			  android:layout_below="@+id/get_cycle"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="10dp"
+                  android:layout_marginLeft="50dp"
+				  android:layout_marginRight="50dp"
+                  android:text="Quota:"
+                  android:textSize="20dp"
+                   />
+            <SeekBar
+                   android:id="@+id/set_quota"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentLeft="true"
+                   android:layout_below="@+id/quota_view"
+                   android:layout_marginLeft="50dp"
+				   android:layout_marginRight="50dp"
+                   android:layout_marginTop="22dp" />
+             
+             <TextView
+                  android:id="@+id/threshold_view"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+    			  android:layout_below="@+id/set_quota"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginLeft="50dp"
+				  android:layout_marginRight="50dp"
+                  android:text="Threshold Limit:"
+                  android:textSize="20dp"
+                   />
             
-           
-           
-           
-           
+             <EditText
+      			  android:id="@+id/threhold_limit"
+        			android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+        			android:layout_marginTop="10dp"
+			        android:layout_marginLeft="60dp"
+					android:layout_marginRight="60dp"
+			        android:layout_below="@+id/threshold_view"
+        			android:layout_centerHorizontal="true"
+                />
+            
+            </RelativeLayout>
            
         </FrameLayout>
     </LinearLayout>
