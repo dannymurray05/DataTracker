@@ -25,6 +25,10 @@ targetCompatibility = 1.7
 repositories {
     mavenCentral()
     maven { url "https://repository.jboss.org/nexus/content/repositories/releases" }
+    
+    flatDir {
+    	dirs '../DataTrackerStandards/bin'
+    }
 }
 
 
@@ -40,6 +44,7 @@ dependencies {
     compile("org.springframework:spring-context-support")
     compile("javax.mail:mail:1.4.7")
     compile("com.h2database:h2")
+    compile('data_tracker_standards:data_tracker_standards-0.0.2')
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 

@@ -14,6 +14,7 @@ import datatrackerserver.entities.Account;
 import datatrackerserver.repositories.DeviceRepository;
 import datatrackerserver.repositories.AccountRepository;
 import datatrackerserver.security.SecurityManager;
+import datatrackerstandards.DataTrackerConstants.DeviceValidationError;
 
 @Configuration
 @EnableAutoConfiguration
@@ -162,5 +163,19 @@ public class DeviceHandler {
 		}
 
 		return success;
+	}
+
+	public DeviceValidationError validDevice(String phoneNumber) {
+		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
+		Device device = deviceRepo.findOne(phoneNumber);
+		if(device == null) {
+			return DeviceValidationError.DEVICE_NOT_FOUND;
+		}
+		else if(device.getAccount() == null) {
+			return DeviceValidationError.PENDING_ACCOUNT_VALIDATION;
+		}
+		else {
+			return null;
+		}
 	}
 }

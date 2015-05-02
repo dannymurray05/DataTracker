@@ -9,6 +9,7 @@ import datatrackerserver.email.EmailManager;
 import datatrackerserver.entities.Account;
 import datatrackerserver.repositories.AccountRepository;
 import datatrackerserver.security.SecurityManager;
+import datatrackerstandards.DataTrackerConstants.AccountValidationError;
 
 @Configuration
 @EnableAutoConfiguration
@@ -183,5 +184,20 @@ public class AccountHandler {
 		}
 
 		return false;
+	}
+
+	public AccountValidationError validAccount(String phoneNumber, String password) {
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account account = accountRepo.findOne(phoneNumber);
+		
+		if(account == null) {
+			return AccountValidationError.ACCOUNT_NOT_FOUND;
+		}
+		else if(!account.getPassword().equals(password)) {
+			return AccountValidationError.INCORRECT_PHONE_NUMBER_OR_PASSWORD;
+		}
+		else {
+			return null;
+		}
 	}
 }

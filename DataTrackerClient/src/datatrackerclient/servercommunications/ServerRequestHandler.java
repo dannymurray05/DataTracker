@@ -7,7 +7,7 @@ import java.util.Locale;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 
-import datatrackerclient.servercommunications.DataTrackerRequest.RequestType;
+import datatrackerstandards.RequestType;
 
 public class ServerRequestHandler {
 	//private static Logger serverRequestLogger = Logger.getLogger("ServerRequestHandlerLogger");
@@ -82,6 +82,17 @@ public class ServerRequestHandler {
 			String phoneNumber, String password, String setting, String value) {
 		makeRequest(RequestType.UPDATE_ACCOUNT_SETTING, listener, errorListener,
 				phoneNumber, password, setting, value);
+	}
+
+	public static void validDevice(Listener<String> listener, ErrorListener errorListener,
+			String phoneNumber) {
+		makeRequest(RequestType.VALID_DEVICE, listener, errorListener, phoneNumber);
+	}
+
+	public static void validAccount(Listener<String> listener, ErrorListener errorListener,
+			String phoneNumber, String password) {
+		makeRequest(RequestType.VALID_ACCOUNT, listener, errorListener,
+				phoneNumber, password);
 	}
 
 	public static String formatDate(Date date) {

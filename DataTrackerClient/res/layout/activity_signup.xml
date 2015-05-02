@@ -5,101 +5,168 @@
      >
 
     <TextView
-		    android:id="@+id/text1"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentLeft="true"
-		    android:layout_alignParentTop="true"
-		    android:layout_centerHorizontal="true"
-		    android:gravity="center"
-		    android:layout_marginTop="70dp"
-		    android:text="Sign-Up"
-		    android:textColor="#FFFFFF"
-		    android:textSize="25dp" />
+		android:id="@+id/signupHeader"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true"
+		android:gravity="center"
+		android:layout_marginTop="60dp"
+		android:text="Sign-Up"
+		android:textColor="#FFFFFF"
+		android:textSize="25sp" />
 
-    <TextView
-        android:id="@+id/phone_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/text1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
-        android:layout_marginLeft="60dp"
+	<RadioGroup
+		android:id="@+id/signupSelection"
+        android:layout_below="@+id/signupHeader"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="20dp"
+		android:orientation="horizontal">
+		<RadioButton android:id="@+id/accountRegistration"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="60dp"
+			android:textColor="#FFFFFF"
+			android:text="@string/adminSelection"
+			android:checked="true"/>
+		<RadioButton android:id="@+id/memberRegistration"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="60dp"
+			android:textColor="#FFFFFF"
+			android:text="@string/accountMemberSelection"/>
+	</RadioGroup>
+        
+	<TextView
+		android:id="@+id/phoneText"
+		android:layout_below="@+id/signupSelection"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="30dp"
+		android:layout_marginLeft="60dp"
 		android:layout_marginRight="60dp"
-        android:text="Phone Number:"
-        android:textColor="#FFFFFF"
-        android:textSize="15dp" />
+		android:text="Phone Number:"
+		android:textColor="#FFFFFF"
+		android:textSize="15sp" />
+	
+	<EditText
+		android:id="@+id/phoneEdit"
+		android:layout_below="@+id/phoneText"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:layout_marginLeft="60dp"
+		android:layout_marginRight="60dp"
+		android:layout_centerHorizontal="true"
+		android:textColor="#FFFFFF"
+		android:inputType="phone"
+		android:ems="10" />
 
-    <EditText
-        android:id="@+id/phone_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-		android:layout_marginRight="60dp"
-        android:layout_below="@+id/phone_text"
-        android:textColor="#FFFFFF"
-        android:layout_centerHorizontal="true"
-        android:ems="10" />
-    
-     <TextView
-        android:id="@+id/pwd_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/phone_edit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
-        android:layout_marginLeft="60dp"
-		android:layout_marginRight="60dp"
-        android:text="Password:"
-        android:textColor="#FFFFFF"
-        android:textSize="15dp" />
+	<ViewSwitcher
+		android:id="@+id/signUpOptionSwitcher"
+		android:layout_below="@+id/phoneEdit"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		>
 
-    <EditText
-        android:id="@+id/pwd_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-		android:layout_marginRight="60dp"
-        android:layout_below="@+id/pwd_text"
-        android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:inputType="textPassword"
-        android:textColor="#FFFFFF" />
-    
-    <TextView
-        android:id="@+id/email_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pwd_edit"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
-        android:layout_marginLeft="60dp"
-		android:layout_marginRight="60dp"
-        android:text="Email Id:"
-        android:textColor="#FFFFFF"
-        android:textSize="15dp" />
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			>
+			
+			 <TextView
+				android:id="@+id/passwordText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="22dp"
+				android:layout_marginLeft="60dp"
+				android:layout_marginRight="60dp"
+				android:text="Password:"
+				android:textColor="#FFFFFF"
+				android:textSize="15sp" />
 
-    <EditText
-        android:id="@+id/email_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
-		android:layout_marginRight="60dp"
-        android:layout_below="@+id/email_text"
-        android:layout_centerHorizontal="true"
-        android:textColor="#FFFFFF"
-        android:ems="10" />
+			<EditText
+				android:id="@+id/passwordEdit"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:layout_marginLeft="60dp"
+				android:layout_marginRight="60dp"
+				android:layout_gravity="center_horizontal"
+				android:ems="10"
+				android:inputType="textPassword"
+				android:textColor="#FFFFFF" />
+			
+			<TextView
+				android:id="@+id/emailText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="22dp"
+				android:layout_marginLeft="60dp"
+				android:layout_marginRight="60dp"
+				android:text="Email Id:"
+				android:textColor="#FFFFFF"
+				android:textSize="15sp" />
+
+			<EditText
+				android:id="@+id/emailEdit"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:layout_marginLeft="60dp"
+				android:layout_marginRight="60dp"
+				android:layout_gravity="center_horizontal"
+				android:inputType="textEmailAddress"
+				android:textColor="#FFFFFF"
+				android:ems="10" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+
+			<TextView
+				android:id="@+id/accountPhoneText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				android:layout_marginTop="22dp"
+				android:layout_marginLeft="60dp"
+				android:layout_marginRight="60dp"
+				android:text="Account Phone Number:"
+				android:textColor="#FFFFFF"
+				android:textSize="15sp" />
+			
+			<EditText
+				android:id="@+id/accountPhoneEdit"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10dp"
+				android:layout_marginLeft="60dp"
+				android:layout_marginRight="60dp"
+				android:layout_gravity="center_horizontal"
+				android:inputType="phone"
+				android:textColor="#FFFFFF"
+				android:ems="10" />
+
+		</LinearLayout>
+    </ViewSwitcher>
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/email_edit"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="80dp"
 		android:layout_marginRight="80dp"
         android:text="Register"

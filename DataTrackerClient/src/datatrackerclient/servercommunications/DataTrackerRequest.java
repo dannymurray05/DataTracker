@@ -14,57 +14,10 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import datatrackerserver.restcontrol.DataTrackerConstants;
+import datatrackerstandards.DataTrackerConstants;
+import datatrackerstandards.RequestType;
 
 public class DataTrackerRequest extends StringRequest {
-
-
-	public static enum RequestType {
-		REGISTER_ACCOUNT("/register_account", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.PASSWORD_PARAM, DataTrackerConstants.EMAIL_PARAM),
-		VALIDATE_EMAIL("/validate_email", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.CODE_PARAM),
-		REGISTER_DEVICE("/register_device", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.ACCOUNT_PHONE_NUM_PARAM),
-		VALIDATE_DEVICE("/validate_device", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.ACCOUNT_PHONE_NUM_PARAM, DataTrackerConstants.CODE_PARAM),
-		LOG_DATA("/log_data", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM, DataTrackerConstants.DATE_PARAM,
-				DataTrackerConstants.HOUR_PARAM, DataTrackerConstants.BYTES_PARAM),
-		REQUEST_DEVICE_DATA("/request_device_data", Method.GET, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.DATE_BEGIN_PARAM, DataTrackerConstants.DATE_END_PARAM),
-		REQUEST_ACCOUNT_DATA("/request_account_data", Method.GET, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.PASSWORD_PARAM, DataTrackerConstants.DATE_BEGIN_PARAM, DataTrackerConstants.DATE_END_PARAM),
-		REQUEST_DEVICE_SETTINGS("/request_device_settings", Method.GET, DataTrackerConstants.PHONE_NUM_PARAM),
-		REQUEST_ACCOUNT_SETTINGS("/request_account_settings", Method.GET, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.PASSWORD_PARAM),
-		UPDATE_DEVICE_SETTING("/update_device_settings", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.SETTING_PARAM, DataTrackerConstants.VALUE_PARAM),
-		UPDATE_ACCOUNT_SETTING("/update_account_settings", Method.POST, DataTrackerConstants.PHONE_NUM_PARAM,
-				DataTrackerConstants.PASSWORD_PARAM, DataTrackerConstants.SETTING_PARAM, DataTrackerConstants.VALUE_PARAM),
-		;
-
-		private String mapping;
-		private int method;
-		private List<String> paramKeys;
-		
-		public String getMapping() {
-			return mapping;
-		}
-		
-		public int getMethod() {
-			return method;
-		}
-
-		public List<String> getParamKeys() {
-			return paramKeys;
-		}
-
-		RequestType(String mapping, int method, String... params) {
-			this.mapping = mapping;
-			this.method = method;
-			paramKeys = Arrays.asList(params);
-		}
-	}
 
 	private RequestType requestType;
 	private List<String> requestParams;

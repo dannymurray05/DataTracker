@@ -18,9 +18,9 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 
-import datatrackerclient.servercommunications.DataTrackerRequest.RequestType;
 import datatrackerclient.servercommunications.ServerRequestHandler;
-import datatrackerserver.restcontrol.DataTrackerConstants;
+import datatrackerstandards.DataTrackerConstants;
+import datatrackerstandards.RequestType;
 
 public class DataTrackingManager extends Service implements Runnable {
 

@@ -1,9 +1,7 @@
 package datatrackerclient.sessionmanagement;
 
-
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,54 +10,59 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.ViewSwitcher;
 
-import com.android.volley.Response.Listener;
 import com.example.datatrackerclient.R;
 
-import datatrackerclient.servercommunications.DataTrackerRequest;
-import datatrackerclient.servercommunications.ServerRequestHandler;
-
-
-public class Signup extends Activity {
+public class Signup extends Activity implements PropertyChangeListener {
 	
-	Context context = this;
 	@Override
-	protected void onCreate(Bundle savedInstanceState) 
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_signup);
+
+		Button register = (Button) findViewById(R.id.register_button);
+		RadioButton accountRegistration = (RadioButton) findViewById(R.id.accountRegistration);
+		RadioButton memberRegistration = (RadioButton) findViewById(R.id.memberRegistration);
+		final ViewSwitcher signUpOptionSwitcher = (ViewSwitcher) findViewById(R.id.signUpOptionSwitcher);
+
+		final EditText phoneEdit = (EditText) findViewById(R.id.phoneEdit);
+		final EditText passwordEdit = (EditText) findViewById(R.id.passwordEdit);
+		final EditText emailEdit = (EditText) findViewById(R.id.emailEdit);
+		final EditText accountPhoneEdit = (EditText) findViewById(R.id.accountPhoneEdit);
 		
+		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		final String phoneNumber = telephonyManager.getLine1Number();
+		phoneEdit.setText(String.valueOf(phoneNumber));
 		
-		Button login  = (Button) findViewById(R.id.register_button);
-		
-		final EditText phone_number = (EditText) findViewById(R.id.phone_edit);
-		
-		TelephonyManager get_number = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-		final String mPhoneNumber = get_number.getLine1Number();
-		
-		phone_number.setText(String.valueOf(mPhoneNumber));
-		
-		login.setOnClickListener(new View.OnClickListener()
-		{
-				
+		register.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				///ServerRequestHandler.newAccount(phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
-
-				//phone_number.getText().toString()
-				
-                ServerRequestHandler.registerAccount(new Listener<String>() {
-					@Override
-					public void onResponse(String arg0) {
-						Logger.getAnonymousLogger().log(Level.INFO, arg0);
-					}
-                }, new DataTrackerRequest.GenericErrorListener(),
-                        phone_number.getText().toString(), "password", "dannymurray05@gmail.com");
+				SessionManager.getInstance(getApplicationContext(), Signup.this).signUp(
+						phoneEdit.getText().toString(), accountPhoneEdit.getText().toString(),
+                		passwordEdit.getText().toString(), emailEdit.getText().toString());
 			}
-		}
-		);
-		
+		});
+
+		accountRegistration.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				signUpOptionSwitcher.showNext();
+			}
+		});
+
+		memberRegistration.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				signUpOptionSwitcher.showNext();
+			}
+		});
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		// TODO Auto-generated method stub
 		
 	}
 }

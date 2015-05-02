@@ -5,5 +5,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_datatracker">Datatracker</string>
+    <string name="signUpText">Sign Up</string>
+    <string name="enterText">Enter</string>
+    <string name="phoneNumberText">Phone Number</string>
+    <string name="passwordText">Password (Account Admin Only)</string>
+    <string name="appNamePretty">Data Tracker</string>
+    <string name="adminSelection">Admin</string>
+    <string name="accountMemberSelection">User</string>
 
 </resources>

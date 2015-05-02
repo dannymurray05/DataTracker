@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,6 +25,9 @@ import datatrackerserver.entitymanagement.AccountHandler.AccountSettings;
 import datatrackerserver.entitymanagement.DataHandler;
 import datatrackerserver.entitymanagement.DeviceHandler;
 import datatrackerserver.entitymanagement.DeviceHandler.DeviceSettings;
+import datatrackerstandards.DataTrackerConstants;
+import datatrackerstandards.DataTrackerConstants.AccountValidationError;
+import datatrackerstandards.DataTrackerConstants.DeviceValidationError;
 
 @Component
 @RestController
@@ -41,11 +43,11 @@ public class RESTHandler {
     @ResponseBody
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public String handleException(Exception e) {
-    	System.out.print(e.getMessage());
+    	System.out.println(e.getMessage());
     	return e.getMessage();
     }
 
-	@RequestMapping(value = "/register_account", method = RequestMethod.POST)
+	@RequestMapping(value = "/register_account")
 	public ResponseEntity<String> registerAccount(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "password") String password, @RequestParam(value = "email") String email) {
 		AccountHandler.RegistrationError error = appContext.getBean(AccountHandler.class).registerAccount(phoneNumber, password, email);
@@ -57,7 +59,7 @@ public class RESTHandler {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/validate_email", method = RequestMethod.GET)
+	@RequestMapping(value = "/validate_email")
 	public ResponseEntity<String> validateEmail(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "code") String code) {
 		boolean validated = appContext.getBean(AccountHandler.class).validateEmail(phoneNumber, code);
@@ -69,7 +71,7 @@ public class RESTHandler {
 		return new ResponseEntity<String>("Invalid code", HttpStatus.UNAUTHORIZED);
 	}
 
-	@RequestMapping(value = "/register_device", method = RequestMethod.POST)
+	@RequestMapping(value = "/register_device")
 	public ResponseEntity<String> registerDevice(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "accountPhoneNumber") String accountPhoneNumber) {
 		boolean deviceCreated = appContext.getBean(DeviceHandler.class).registerDevice(phoneNumber, accountPhoneNumber);
@@ -82,7 +84,7 @@ public class RESTHandler {
 		}
 	}
 
-	@RequestMapping(value = "/validate_device", method = RequestMethod.GET)
+	@RequestMapping(value = "/validate_device")
 	public ResponseEntity<String> validateDevice(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "accountPhoneNumber") String accountPhoneNumber,
 			@RequestParam(value = "code") String code) {
@@ -96,7 +98,7 @@ public class RESTHandler {
 		}
 	}
 
-	@RequestMapping(value = "/log_data", method = RequestMethod.POST)
+	@RequestMapping(value = "/log_data")
 	public ResponseEntity<String> logData(@RequestParam(value="phoneNumber") String phoneNumber, @RequestParam(value="date") String dateStr,
 			@RequestParam(value="hour") String hour, @RequestParam(value="bytes") String bytes) {
 		Date date = DataTrackerConstants.stringToDate(dateStr);
@@ -113,7 +115,7 @@ public class RESTHandler {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-    @RequestMapping(value = "/request_device_data", method = RequestMethod.GET)
+    @RequestMapping(value = "/request_device_data")
     public @ResponseBody List<UsageHistory> requestDeviceData(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
     		HttpServletResponse response) {
@@ -134,7 +136,7 @@ public class RESTHandler {
         return usageHistory;
     }
     
-    @RequestMapping(value = "/request_account_data", method = RequestMethod.GET)
+    @RequestMapping(value = "/request_account_data")
     public @ResponseBody List<UsageHistory> requestAccountData(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="password") String password,
     		@RequestParam(value="beginDate") String beginDateStr, @RequestParam(value="endDate") String endDateStr,
@@ -161,7 +163,7 @@ public class RESTHandler {
         return usageHistory;
     }
 
-    @RequestMapping(value = "/request_device_settings", method = RequestMethod.GET)
+    @RequestMapping(value = "/request_device_settings")
     public Device requestDeviceSettings(@RequestParam(value="phoneNumber") String phoneNumber) {
         Device device = appContext.getBean(DeviceHandler.class).getDeviceSettings(phoneNumber);
 
@@ -169,7 +171,7 @@ public class RESTHandler {
     }
 
     
-    @RequestMapping(value = "/request_account_settings", method = RequestMethod.GET)
+    @RequestMapping(value = "/request_account_settings")
     public Account requestAccountSettings(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="password") String password) {
     	Account account = appContext.getBean(AccountHandler.class).getAccountSettings(phoneNumber, password);
@@ -177,7 +179,7 @@ public class RESTHandler {
         return account;
     }
 
-    @RequestMapping(value = "/update_device_setting", method = RequestMethod.POST)
+    @RequestMapping(value = "/update_device_setting")
     public ResponseEntity<String> updateDeviceSetting(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="setting") String settingStr, @RequestParam(value="value") String value) {
     	DeviceSettings setting = DeviceSettings.valueOf(settingStr);
@@ -195,7 +197,7 @@ public class RESTHandler {
         }
     }
     
-    @RequestMapping(value = "/update_account_setting", method = RequestMethod.POST)
+    @RequestMapping(value = "/update_account_setting")
     public ResponseEntity<String> updateAccountSetting(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="password") String password,
     		@RequestParam(value="setting") String settingStr, @RequestParam(value="value") String value) {
@@ -213,4 +215,33 @@ public class RESTHandler {
         	return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
         }
     }
+  
+    @RequestMapping(value = "/valid_device")
+    public ResponseEntity<String> validDevice(@RequestParam(value="phoneNumber") String phoneNumber) {
+    	DeviceValidationError error = appContext.getBean(DeviceHandler.class).validDevice(phoneNumber);
+       	if(error == null) {
+       		System.out.println("Device valid!");
+			return new ResponseEntity<String>(HttpStatus.OK);
+		}
+		else {
+       		System.out.println("Device invalid! " + error.name());
+       		return new ResponseEntity<String>(error.name(), HttpStatus.BAD_REQUEST);
+		}
+    }
+
+    @RequestMapping(value = "/valid_account")
+    public ResponseEntity<String> validAccount(@RequestParam(value="phoneNumber") String phoneNumber,
+    		@RequestParam(value="password") String password) {
+		AccountValidationError error = appContext.getBean(AccountHandler.class)
+				.validAccount(phoneNumber, password);
+		if(error == null) {
+       		System.out.println("Account valid!");
+			return new ResponseEntity<String>(HttpStatus.OK);
+		}
+		else {
+       		System.out.println("Account invalid! " + error.name());
+       		return new ResponseEntity<String>(error.name(), HttpStatus.BAD_REQUEST);
+		}
+    }
+
 }

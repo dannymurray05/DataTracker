@@ -1,45 +1,73 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:background="@drawable/purple1"
+    android:background="@drawable/purple1"
      >
-		
-		<TextView
-		    android:id="@+id/text1"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentLeft="true"
-		    android:layout_alignParentTop="true"
-		    android:gravity="center"
-		    android:layout_marginTop="70dp"
-		    android:text="Data Tracker"
-		    android:textSize="25dp"
-		    android:textColor="#FFFFFF" />
+	
     
-    <Button
-        android:id="@+id/button1"
+	<TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:gravity="center"
-        android:layout_marginLeft="40dp"
-		android:layout_marginRight="40dp"
-        android:layout_marginTop="100dp"
-        android:text="Sign-in as Admin"
-        android:width="200dp" />
+        android:layout_marginTop="40dp"
+        android:text="@string/appNamePretty"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />   
+    
+    <EditText
+        android:id="@+id/phn_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="@string/phoneNumberText"
+        android:textColor="#FFFFFF" />
 
-     <Button
-        android:id="@+id/button2"
+    <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_marginLeft="40dp"
-		android:layout_marginRight="40dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="Sign-in as User"
-        android:width="200dp" />
-    
-    
+        android:layout_below="@+id/phn_text"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:textColorHint="#FFFFFF"
+        android:hint="@string/passwordText"
+        android:inputType="textPassword"
+        android:textColor="#FFFFFF"
+         />
+  
+    <Button
+        android:id="@+id/enterButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:onClick="Verify"
+        android:text="@string/enterText" />
+
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enterButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+         android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:onClick="Signup"
+        android:text="@string/signUpText" />
+   
 </RelativeLayout>
