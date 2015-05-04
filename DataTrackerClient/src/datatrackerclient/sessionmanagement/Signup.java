@@ -44,7 +44,7 @@ public class Signup extends Activity implements PropertyChangeListener {
 		//debug
 		passwordEdit.setText("password");
 		emailEdit.setText("dannymurray05@gmail.com");
-		accountPhoneEdit.setText("5303204790");
+		accountPhoneEdit.setText("15303204790");
 		
 		//end debug
 		register.setOnClickListener(new View.OnClickListener() {

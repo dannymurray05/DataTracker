@@ -41,13 +41,13 @@ public class RESTHandler {
 		this.appContext = appContext;
 	}
 
-    /*@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public String handleException(Exception e) {
     	System.out.println(e.getMessage());
     	return e.getMessage();
-    }*/
+    }
 
 	@RequestMapping(value = "/register_account")
     @ResponseBody 
@@ -234,6 +234,6 @@ public class RESTHandler {
 		AccountValidationStatus status = appContext.getBean(AccountHandler.class)
 				.validAccount(phoneNumber, password);
        	System.out.println(status.getStatusMessage());
-       	return new ResponseEntity<String>(status.name(), status.getSuccess() ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+       	return new ResponseEntity<String>(status.name(), status.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

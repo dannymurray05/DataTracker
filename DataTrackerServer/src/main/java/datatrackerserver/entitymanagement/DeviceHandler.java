@@ -34,7 +34,7 @@ public class DeviceHandler {
 	 * Only to be used for registering the device of a new account.
 	 * @param phoneNumber
 	 * @param account
-	 * @return true if the device was created, false otherwise.
+	 * @return the status of the registration attempt
 	 */
 	public DeviceRegistrationStatus registerDevice(String phoneNumber, Account account) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
@@ -89,7 +89,10 @@ public class DeviceHandler {
 
 		boolean deviceValidated = false;
 
-		if(device.getValidationCode().equals(code)) {
+		if(account == null) {
+			return false;
+		}
+		else if(device.getValidationCode() != null && device.getValidationCode().equals(code)) {
 			//validated
 			device.setAccount(account);
 			deviceRepo.save(device);
