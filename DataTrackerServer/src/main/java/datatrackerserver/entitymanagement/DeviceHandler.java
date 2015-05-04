@@ -9,12 +9,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import datatrackerserver.email.EmailManager;
-import datatrackerserver.entities.Device;
 import datatrackerserver.entities.Account;
-import datatrackerserver.repositories.DeviceRepository;
+import datatrackerserver.entities.Device;
 import datatrackerserver.repositories.AccountRepository;
+import datatrackerserver.repositories.DeviceRepository;
 import datatrackerserver.security.SecurityManager;
-import datatrackerstandards.DataTrackerConstants.DeviceValidationError;
+import datatrackerstandards.DeviceRegistrationStatus;
+import datatrackerstandards.DeviceSettings;
+import datatrackerstandards.DeviceValidationStatus;
 
 @Configuration
 @EnableAutoConfiguration
@@ -28,20 +30,13 @@ public class DeviceHandler {
 
 	protected DeviceHandler() {}
 
-	public static enum DeviceSettings {
-		QUOTA,
-		THRESHOLD,
-		AUTO_SHUTOFF,
-		;
-	}
-
 	/**
 	 * Only to be used for registering the device of a new account.
 	 * @param phoneNumber
 	 * @param account
 	 * @return true if the device was created, false otherwise.
 	 */
-	public boolean registerDevice(String phoneNumber, Account account) {
+	public DeviceRegistrationStatus registerDevice(String phoneNumber, Account account) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);
 
@@ -49,28 +44,33 @@ public class DeviceHandler {
 			System.out.println("Device already exists! Modifying controlling account!");
 			device.setAccount(account);
 			deviceRepo.save(device);
-			return false;
+			return DeviceRegistrationStatus.SUCCESS;
 		}
 		else {
 			device = new Device(phoneNumber, account);
 			deviceRepo.save(device);
-			return true;
+			return DeviceRegistrationStatus.SUCCESS;
 		}
 	}
 	
-	public boolean registerDevice(String phoneNumber, String accountPhoneNumber) {
+	public DeviceRegistrationStatus registerDevice(String phoneNumber, String accountPhoneNumber) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);
         AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
         Account account = accountRepo.findOne(accountPhoneNumber);
 
-        boolean deviceCreated = false;
+        if(account == null) {
+        	return DeviceRegistrationStatus.ACCOUNT_NOT_FOUND;
+        }
+
+        DeviceRegistrationStatus status;
 		if(device != null) {
 			Logger.getAnonymousLogger().log(Level.INFO, "Device already exists! Requesting validation from account to modify.");
+			status = DeviceRegistrationStatus.ACCOUNT_CHANGE_PENDING_VALIDATION;
 		}
 		else {
 			device = new Device(phoneNumber);
-			deviceCreated = true;
+			status = DeviceRegistrationStatus.NEW_DEVICE_PENDING_VALIDATION;
 		}
 		
 		device.setValidationCode(SecurityManager.generateRandomCode());
@@ -78,7 +78,7 @@ public class DeviceHandler {
 				account.getEmail(), accountPhoneNumber, phoneNumber, device.getValidationCode());
 		deviceRepo.save(device);
 		
-		return deviceCreated;
+		return status;
 	}
 
 	public boolean validateDevice(String phoneNumber, String accountPhoneNumber, String code) {
@@ -165,17 +165,17 @@ public class DeviceHandler {
 		return success;
 	}
 
-	public DeviceValidationError validDevice(String phoneNumber) {
+	public DeviceValidationStatus validDevice(String phoneNumber) {
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);
 		if(device == null) {
-			return DeviceValidationError.DEVICE_NOT_FOUND;
+			return DeviceValidationStatus.DEVICE_NOT_FOUND;
 		}
 		else if(device.getAccount() == null) {
-			return DeviceValidationError.PENDING_ACCOUNT_VALIDATION;
+			return DeviceValidationStatus.PENDING_ACCOUNT_VALIDATION;
 		}
 		else {
-			return null;
+			return DeviceValidationStatus.VALIDATED;
 		}
 	}
 }

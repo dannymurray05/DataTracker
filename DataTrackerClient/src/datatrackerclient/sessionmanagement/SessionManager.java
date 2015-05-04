@@ -12,15 +12,17 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
 import datatrackerclient.servercommunications.ServerRequestHandler;
-import datatrackerstandards.DataTrackerConstants.AccountValidationError;
-import datatrackerstandards.DataTrackerConstants.DeviceValidationError;
+import datatrackerstandards.AccountRegistrationStatus;
+import datatrackerstandards.AccountValidationStatus;
+import datatrackerstandards.DeviceRegistrationStatus;
+import datatrackerstandards.DeviceValidationStatus;
 
 
 public class SessionManager {
 
 	public static enum SessionStatus {
-		LOGGED_IN,
 		LOGGED_OUT,
+		LOGGED_IN,
 		DEVICE_ONLY, //no login required, just a member (non-owner) of an account
 		;
 	}
@@ -38,7 +40,9 @@ public class SessionManager {
 	public static final String ACCOUNT_LOGIN_ERROR = "accountLoginError";
 	public static final String DEVICE_SIGNUP_ERROR = "deviceSignupError";
 	public static final String ACCOUNT_SIGNUP_ERROR = "accountSignupError";
-	
+	public static final String DEVICE_LOGIN_SUCCESS = "deviceLoginSuccess";
+	public static final String DEVICE_REGISTRATION_SUCCESS = "deviceRegistrationSuccess";
+
 	private static final String SESSION_FILE = "sessionFile";
 	private static final String PHONE_NUMBER = "phoneNumber";
 	private static final String PASSWORD = "password";
@@ -50,22 +54,28 @@ public class SessionManager {
 		SharedPreferences sessionFile = context.getSharedPreferences(SESSION_FILE, Context.MODE_PRIVATE);
 		sessionStatus = SessionStatus.valueOf(sessionFile.getString(SESSION_STATUS, SessionStatus.LOGGED_OUT.name()));
 		phoneNumber = sessionFile.getString(PHONE_NUMBER, "5555555555");
-		password = sessionFile.getString(PASSWORD, "password");
+		password = sessionFile.getString(PASSWORD, "");
 	}
 	
 	public static SessionManager getInstance(Context context, PropertyChangeListener listener) {
+		if(context == null) {
+			return null;
+		}
 		if(mInstance == null) {
 			mInstance = new SessionManager(context, listener);
 		}
-		else if(!mContext.equals(context)) {
-			mContext = context;
-			propertyChangeHandler.addPropertyChangeListener(listener);
+		else {
+			if(!mContext.equals(context)) {
+				mContext = context;
+			}
+
+			PropertyChangeListener[] listeners = propertyChangeHandler.getPropertyChangeListeners();
+			if(listeners.length > 0 && !listeners[0].equals(listener)) {
+				propertyChangeHandler.removePropertyChangeListener(listeners[0]);
+				propertyChangeHandler.addPropertyChangeListener(listener);
+			}
 		}
-		
-		propertyChangeHandler.removePropertyChangeListener(
-				propertyChangeHandler.getPropertyChangeListeners()[0]);
-		propertyChangeHandler.addPropertyChangeListener(listener);
-		
+
 		return mInstance;
 	}
 
@@ -143,25 +153,25 @@ public class SessionManager {
 			setPassword(password);
 			ServerRequestHandler.validAccount(new AccountLoginListener(),
 					new AccountLoginErrorListener(), phoneNumber, password);
-
 		}
 	}
 
-	public void signUp(final String phoneNumber, final String accountPhoneNumber,
-			final String password, final String email) {
-		if(password == null || password.isEmpty()) {
-			setPhoneNumber(phoneNumber);
-			ServerRequestHandler.registerDevice(new DeviceLoginListener(),
-					new DeviceSignupErrorListener(), phoneNumber, accountPhoneNumber);
-		}
-		else {
-			setPhoneNumber(phoneNumber);
-			setPassword(password);
-			ServerRequestHandler.registerAccount(new AccountLoginListener(),
-					new AccountSignupErrorListener(), phoneNumber, password, email);
-		}
+	//New account sign up
+	public void signUp(final String phoneNumber, final String password, final String email) {
+		setPhoneNumber(phoneNumber);
+		setPassword(password);
+		ServerRequestHandler.registerAccount(new AccountRegistrationListener(),
+				new AccountRegistrationErrorListener(), phoneNumber, password, email);
 	}
 
+	//New user sign up
+	public void signUp(final String phoneNumber, final String accountPhoneNumber) {
+		setPhoneNumber(phoneNumber);
+		ServerRequestHandler.registerDevice(new DeviceRegistrationListener(),
+				new DeviceRegistrationErrorListener(), phoneNumber, accountPhoneNumber);
+	}
+
+	
 	public boolean logOut() {
 		setSessionStatus(SessionStatus.LOGGED_OUT);
 		return true;
@@ -171,6 +181,10 @@ public class SessionManager {
 	private class DeviceLoginListener implements Listener<String> {
 		@Override
 		public void onResponse(String arg0) {
+			if(arg0 != null) {
+                DeviceValidationStatus status = DeviceValidationStatus.valueOf(new String(arg0));
+                propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_SUCCESS, null, status);
+			}
 			setSessionStatus(SessionStatus.DEVICE_ONLY);
 		}
 	}
@@ -186,11 +200,11 @@ public class SessionManager {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-                DeviceValidationError error = DeviceValidationError.valueOf(new String(arg0.networkResponse.data));
+                DeviceValidationStatus error = DeviceValidationStatus.valueOf(new String(arg0.networkResponse.data));
                 propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_ERROR, null, error);
 			}
 			else {
-                propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_ERROR, null, DeviceValidationError.NO_SERVER_RESPONSE);
+                propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_ERROR, null, DeviceValidationStatus.NO_SERVER_RESPONSE);
 			}
 		}
 	}
@@ -199,38 +213,55 @@ public class SessionManager {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-				AccountValidationError error = AccountValidationError.valueOf(String.valueOf(arg0.networkResponse.data));
+				AccountValidationStatus error = AccountValidationStatus.valueOf(new String(arg0.networkResponse.data));
 				propertyChangeHandler.firePropertyChange(ACCOUNT_LOGIN_ERROR, null, error);
 			}
 			else {
-				propertyChangeHandler.firePropertyChange(ACCOUNT_LOGIN_ERROR, null, AccountValidationError.NO_SERVER_RESPONSE);
+				propertyChangeHandler.firePropertyChange(ACCOUNT_LOGIN_ERROR, null, AccountValidationStatus.NO_SERVER_RESPONSE);
 			}
+		}
+	}
 
+	private class DeviceRegistrationListener implements Listener<String> {
+		@Override
+		public void onResponse(String arg0) {
+			if(arg0 != null) {
+                DeviceRegistrationStatus status = DeviceRegistrationStatus.valueOf(new String(arg0));
+                propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_SUCCESS, null, status);
+			}
+			setSessionStatus(SessionStatus.DEVICE_ONLY);
 		}
 	}
 	
-	private class DeviceSignupErrorListener implements ErrorListener {
+	private class AccountRegistrationListener implements Listener<String> {
+		@Override
+		public void onResponse(String arg0) {
+			setSessionStatus(SessionStatus.LOGGED_IN);
+		}
+	}
+	
+	private class DeviceRegistrationErrorListener implements ErrorListener {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-				DeviceValidationError error = DeviceValidationError.valueOf(new String(arg0.networkResponse.data));
+				DeviceRegistrationStatus error = DeviceRegistrationStatus.valueOf(new String(arg0.networkResponse.data));
 				propertyChangeHandler.firePropertyChange(DEVICE_SIGNUP_ERROR, null, error);
 			}
 			else {
-				propertyChangeHandler.firePropertyChange(DEVICE_SIGNUP_ERROR, null, DeviceValidationError.NO_SERVER_RESPONSE);
+				propertyChangeHandler.firePropertyChange(DEVICE_SIGNUP_ERROR, null, DeviceValidationStatus.NO_SERVER_RESPONSE);
 			}
 		}
 	}
 	
-	private class AccountSignupErrorListener implements ErrorListener {
+	private class AccountRegistrationErrorListener implements ErrorListener {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-				AccountValidationError error = AccountValidationError.valueOf(String.valueOf(arg0.networkResponse.data));
+				AccountRegistrationStatus error = AccountRegistrationStatus.valueOf(new String(arg0.networkResponse.data));
 				propertyChangeHandler.firePropertyChange(ACCOUNT_SIGNUP_ERROR, null, error);
 			}
 			else {
-				propertyChangeHandler.firePropertyChange(ACCOUNT_SIGNUP_ERROR, null, AccountValidationError.NO_SERVER_RESPONSE);
+				propertyChangeHandler.firePropertyChange(ACCOUNT_SIGNUP_ERROR, null, AccountValidationStatus.NO_SERVER_RESPONSE);
 			}
 		}
 	}

@@ -7,7 +7,12 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="/DataTrackerStandards/bin/data_tracker_standards-0.0.2.jar"/>
 	<classpathentry kind="lib" path="libs/volley.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DataTrackerStandards"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataTrackerStandards">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="DataTrackerStandards/bin"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

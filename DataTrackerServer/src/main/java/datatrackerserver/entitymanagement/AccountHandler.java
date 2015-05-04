@@ -9,7 +9,9 @@ import datatrackerserver.email.EmailManager;
 import datatrackerserver.entities.Account;
 import datatrackerserver.repositories.AccountRepository;
 import datatrackerserver.security.SecurityManager;
-import datatrackerstandards.DataTrackerConstants.AccountValidationError;
+import datatrackerstandards.AccountRegistrationStatus;
+import datatrackerstandards.AccountSettings;
+import datatrackerstandards.AccountValidationStatus;
 
 @Configuration
 @EnableAutoConfiguration
@@ -24,55 +26,30 @@ public class AccountHandler {
 		this.appContext = appContext;
 	}
 	
-	public static enum RegistrationError {
-		INVALID_NUMBER("Invalid phone number: Phone number must be 9 digits (including area code)."),
-		INVALID_PASSWORD("Invalid password: The password must be at least 8 characters long and include at least one non-alphanumeric character."),
-		INVALID_EMAIL("Invalid email: Email address must be a valid email address."),
-		ACCOUNT_ALREADY_EXISTS("Account already exists: The phone number given is already in use."),
-		EMAIL_ALREADY_EXISTS("Email already exists: The email given is already in use."),
-		;
-
-		public final String errorMessage;
-
-		RegistrationError(String message) {
-			errorMessage = message;
-		}
-		
-		public String getErrorMessage() {
-			return errorMessage;
-		}
-	}
-	
-	public static enum AccountSettings {
-		BILLING_CYCLE_LENGTH,
-		QUOTA,
-		THRESHOLD,
-		;
-	}
 
 	protected AccountHandler() {}
 
 	//TODO !!!! add all registration/validation mappings and handler functions
 	
-	public RegistrationError registerAccount(String phoneNumber, String password, String email) {
+	public AccountRegistrationStatus registerAccount(String phoneNumber, String password, String email) {
 		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
 		Account newAccount = accountRepo.findOne(phoneNumber);
 		Account accountByEmail = accountRepo.findByEmail(email);
 		if(newAccount != null) {
 			System.out.println("Account already exists");
-			return RegistrationError.ACCOUNT_ALREADY_EXISTS;
+			return AccountRegistrationStatus.ACCOUNT_ALREADY_EXISTS;
 		}
 		else if(accountByEmail != null) {
 			System.out.println("Email already exists");
-			return RegistrationError.EMAIL_ALREADY_EXISTS;
+			return AccountRegistrationStatus.EMAIL_ALREADY_EXISTS;
 		}
 		else {
 			newAccount = new Account(phoneNumber, password, email,
 					DEFAULT_QUOTA, DEFAULT_THRESHOLD);
 			newAccount.setValidationCode(SecurityManager.generateRandomCode());
 			appContext.getBean(EmailManager.class).sendEmailConfirmationRequest(
-					email, phoneNumber, newAccount.getValidationCode());
 			
+					email, phoneNumber, newAccount.getValidationCode());
 			accountRepo.save(newAccount);
 			
 			//create the corresponding device for this account
@@ -86,7 +63,7 @@ public class AccountHandler {
 		}
 		//end debug
 
-		return null; //success
+		return AccountRegistrationStatus.SUCCESS; //success
 	}
 
 	public Account validateAccountAndPassword(String phoneNumber, String password) {
@@ -186,18 +163,18 @@ public class AccountHandler {
 		return false;
 	}
 
-	public AccountValidationError validAccount(String phoneNumber, String password) {
+	public AccountValidationStatus validAccount(String phoneNumber, String password) {
 		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
 		Account account = accountRepo.findOne(phoneNumber);
 		
 		if(account == null) {
-			return AccountValidationError.ACCOUNT_NOT_FOUND;
+			return AccountValidationStatus.ACCOUNT_NOT_FOUND;
 		}
 		else if(!account.getPassword().equals(password)) {
-			return AccountValidationError.INCORRECT_PHONE_NUMBER_OR_PASSWORD;
+			return AccountValidationStatus.INCORRECT_PHONE_NUMBER_OR_PASSWORD;
 		}
 		else {
-			return null;
+			return AccountValidationStatus.VALIDATED;
 		}
 	}
 }

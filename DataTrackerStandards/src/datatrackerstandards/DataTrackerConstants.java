@@ -20,26 +20,6 @@ public class DataTrackerConstants {
 	public static final String DATE_BEGIN_PARAM = "dateBegin";
 	public static final String DATE_END_PARAM = "dateEnd";
 
-	public static enum DataTrackerError {
-		NO_SERVER_RESPONSE,
-		INTERNAL_ERROR,
-		;
-	}
-
-	public static enum DeviceValidationError {
-		DEVICE_NOT_FOUND,
-		PENDING_ACCOUNT_VALIDATION,
-		NO_SERVER_RESPONSE,
-		;
-	}
-
-	public static enum AccountValidationError {
-		ACCOUNT_NOT_FOUND,
-		INCORRECT_PHONE_NUMBER_OR_PASSWORD,
-		NO_SERVER_RESPONSE,
-		;
-	}
-	
     public static String dateToString(Date date) {
     	if(date == null) {
     		return null;
