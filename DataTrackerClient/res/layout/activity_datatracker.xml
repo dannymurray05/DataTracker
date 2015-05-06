@@ -42,7 +42,7 @@
                   android:layout_marginTop="74dp"
                   android:layout_marginLeft="20dp"
 				  android:layout_marginRight="20dp"
-                  android:text="Billing Cycle:"
+                  android:text="@string/billing_text"
                   android:textSize="20dp"
                    />
            
@@ -55,7 +55,7 @@
                   android:layout_marginTop="30dp"
                   android:layout_marginLeft="20dp"
 				  android:layout_marginRight="20dp"
-                  android:text="Data Usage:"
+                  android:text="@string/datausage_text"
                   android:textSize="20dp"
                    />
 
@@ -87,7 +87,7 @@
                    android:layout_marginLeft="50dp"
 				   android:layout_marginRight="50dp"
 				   android:layout_centerHorizontal="true"
-                   android:text="Add Devices" />
+                   android:text="@string/add_text" />
  
  
  			<Button
@@ -99,7 +99,7 @@
 				   android:layout_marginRight="50dp"
 				   android:layout_below="@+id/add_devices"
 				   android:layout_centerHorizontal="true"
-                   android:text="Delete Devices" />
+                   android:text="@string/delete_text" />
                
 
                
@@ -112,7 +112,7 @@
                   android:layout_marginTop="20dp"
                   android:layout_marginLeft="50dp"
 				  android:layout_marginRight="50dp"
-                  android:text="Billing Cycle:"
+                  android:text="@string/cycle_text"
                   android:textSize="20dp"
                    />
               
@@ -125,7 +125,7 @@
                   android:layout_marginTop="20dp"
                   android:layout_marginLeft="150dp"
                   android:layout_marginRight="150dp"
-			      android:hint="Select"
+			      android:hint="@string/select_hint"
                   android:textSize="20dp"
                    />
               
@@ -138,7 +138,7 @@
                    android:layout_marginLeft="50dp"
 				   android:layout_marginRight="50dp"
 				   android:layout_centerHorizontal="true"
-                   android:text="Set (Day of Month)" />
+                   android:text="@string/setcycle" />
               
 
                <TextView
@@ -150,7 +150,7 @@
                   android:layout_marginTop="10dp"
                   android:layout_marginLeft="50dp"
 				  android:layout_marginRight="50dp"
-                  android:text="Quota:"
+                  android:text="@string/setquota"
                   android:textSize="20dp"
                    />
             <SeekBar
@@ -172,7 +172,7 @@
                   android:layout_marginTop="20dp"
                   android:layout_marginLeft="50dp"
 				  android:layout_marginRight="50dp"
-                  android:text="Threshold Limit:"
+                  android:text="@string/threshold_limit"
                   android:textSize="20dp"
                    />
             

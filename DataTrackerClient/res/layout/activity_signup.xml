@@ -12,7 +12,7 @@
 		android:layout_centerHorizontal="true"
 		android:gravity="center"
 		android:layout_marginTop="60dp"
-		android:text="Sign-Up"
+		android:text="@string/title_signup"
 		android:textColor="#FFFFFF"
 		android:textSize="25sp" />
 
@@ -48,7 +48,7 @@
 		android:layout_marginTop="30dp"
 		android:layout_marginLeft="60dp"
 		android:layout_marginRight="60dp"
-		android:text="Phone Number:"
+		android:text="@string/phoneNumberText"
 		android:textColor="#FFFFFF"
 		android:textSize="15sp" />
 	
@@ -87,7 +87,7 @@
 				android:layout_marginTop="22dp"
 				android:layout_marginLeft="60dp"
 				android:layout_marginRight="60dp"
-				android:text="Password:"
+				android:text="@string/signup_password"
 				android:textColor="#FFFFFF"
 				android:textSize="15sp" />
 
@@ -111,7 +111,7 @@
 				android:layout_marginTop="22dp"
 				android:layout_marginLeft="60dp"
 				android:layout_marginRight="60dp"
-				android:text="Email Id:"
+				android:text="@string/email_text"
 				android:textColor="#FFFFFF"
 				android:textSize="15sp" />
 
@@ -140,7 +140,7 @@
 				android:layout_marginTop="22dp"
 				android:layout_marginLeft="60dp"
 				android:layout_marginRight="60dp"
-				android:text="Account Phone Number:"
+				android:text="@string/accountPhoneNumber"
 				android:textColor="#FFFFFF"
 				android:textSize="15sp" />
 			
@@ -169,7 +169,7 @@
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="80dp"
 		android:layout_marginRight="80dp"
-        android:text="Register"
+        android:text="@string/register_button"
          />
     
 </RelativeLayout>

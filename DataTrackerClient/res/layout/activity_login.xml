@@ -29,7 +29,8 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="@string/phoneNumberText"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF" />
 
     <EditText
         android:id="@+id/password"

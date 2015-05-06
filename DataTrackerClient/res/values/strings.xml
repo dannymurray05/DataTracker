@@ -12,5 +12,18 @@
     <string name="appNamePretty">Data Tracker</string>
     <string name="adminSelection">Admin</string>
     <string name="accountMemberSelection">User</string>
-
+    <string name="title_signup">Sign-up</string>
+    <string name="billing_text">Billing Cycle:</string>
+    <string name="datausage_text">Data Usage:</string>
+    <string name="add_text">Add Devices</string>
+    <string name="signup_password">Password: </string>
+    <string name="email_text">Email Id: </string>
+    <string name="register_button">REGISTER</string>
+    <string name="delete_text">Delete Devices</string>
+    <string name="cycle_text">Billing Cycle:</string>
+    <string name="select_hint">Select</string>
+    <string name="setcycle">Set (Day of the Month)</string>
+    <string name="setquota">Quota:</string>
+    <string name="threshold_limit">Threshold Limit:</string>
+    <string name="accountPhoneNumber">Account Phone Number: </string>
 </resources>
