@@ -42,13 +42,13 @@
             </intent-filter>
         </activity>
         
-        <receiver android:name="datatrackerclient.mobiledatamanagment.NetworkChangeReceiver">
+        <receiver android:name="datatrackerclient.mobiledatamanagement.NetworkChangeReceiver">
       	<intent-filter>
         	 <action android:name="android.net.conn.CONNECTIVITY_CHANGE">
      		 </action>
       	</intent-filter>
    		</receiver>
-   		<service android:name="datatrackerclient.mobiledatamanagment.DataTrackingManager"
+   		<service android:name="datatrackerclient.mobiledatamanagement.DataTrackingManager"
          android:enabled="true"/>    
    
         

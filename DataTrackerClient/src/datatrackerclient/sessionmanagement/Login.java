@@ -43,6 +43,9 @@ public class Login extends Activity implements PropertyChangeListener {
 		phoneNumberField.setText(String.valueOf(phoneNumber));
 		//phoneNumberField.setEnabled(false);
 		
+		passwordField.setText("password");
+
+
 		login.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

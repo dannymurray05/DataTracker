@@ -7,11 +7,13 @@ import org.springframework.context.annotation.Configuration;
 
 import datatrackerserver.email.EmailManager;
 import datatrackerserver.entities.Account;
+import datatrackerserver.entities.Device;
 import datatrackerserver.repositories.AccountRepository;
+import datatrackerserver.repositories.DeviceRepository;
 import datatrackerserver.security.SecurityManager;
 import datatrackerstandards.AccountRegistrationStatus;
-import datatrackerstandards.AccountSettings;
 import datatrackerstandards.AccountValidationStatus;
+import datatrackerstandards.settings.AccountSetting;
 
 @Configuration
 @EnableAutoConfiguration
@@ -44,11 +46,9 @@ public class AccountHandler {
 			return AccountRegistrationStatus.EMAIL_ALREADY_EXISTS;
 		}
 		else {
-			newAccount = new Account(phoneNumber, password, email,
-					DEFAULT_QUOTA, DEFAULT_THRESHOLD);
+			newAccount = new Account(phoneNumber, password, email);
 			newAccount.setValidationCode(SecurityManager.generateRandomCode());
 			appContext.getBean(EmailManager.class).sendEmailConfirmationRequest(
-			
 					email, phoneNumber, newAccount.getValidationCode());
 			accountRepo.save(newAccount);
 			
@@ -81,12 +81,13 @@ public class AccountHandler {
 		return account;
 	}
 
-	public Account getAccountSettings(String phoneNumber, String password) {
-		return validateAccountAndPassword(phoneNumber, password);
+	public Account getAccountSettings(String phoneNumber) {
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		return accountRepo.findOne(phoneNumber);
 	}
 
 	public boolean setAccountSetting(String phoneNumber, String password,
-			AccountSettings setting, String value) {
+			AccountSetting setting, String value) {
 		boolean success = false;
 		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
 		Account account = validateAccountAndPassword(phoneNumber, password);
@@ -97,10 +98,10 @@ public class AccountHandler {
 
 		switch(setting) {
 			case QUOTA:
-				long quota = 0;
+				int quota = 0;
 
 				try {
-					quota = Long.valueOf(value);
+					quota = Integer.valueOf(value);
 				}
 				catch(NumberFormatException nfe) {
 					nfe.printStackTrace();
@@ -112,9 +113,9 @@ public class AccountHandler {
 				success = true;
 				break;
 			case THRESHOLD:
-				long threshold = 0;
+				int threshold = 0;
 				try {
-					threshold = Long.valueOf(value);
+					threshold = Integer.valueOf(value);
 				}
 				catch(NumberFormatException nfe) {
 					nfe.printStackTrace();
@@ -125,7 +126,7 @@ public class AccountHandler {
 				account.setThreshold(threshold);
 				success = true;
 				break;
-		case BILLING_CYCLE_LENGTH:
+		case BILLING_CYCLE:
 			int cycleLength = 0;
 			try {
 				cycleLength = Integer.valueOf(value);
@@ -136,7 +137,7 @@ public class AccountHandler {
 				break;
 			}
 			
-			account.setBillingCycleLength(cycleLength);
+			account.setBillingCycleStart(cycleLength);
 			success = true;
 			break;
 		default:
@@ -176,5 +177,23 @@ public class AccountHandler {
 		else {
 			return AccountValidationStatus.VALIDATED;
 		}
+	}
+
+
+	public boolean removeDevice(String phoneNumber, String accountPhoneNumber) {
+		AccountRepository accountRepo = appContext.getBean(AccountRepository.class);
+		Account account = accountRepo.findOne(accountPhoneNumber);
+		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
+		Device device = deviceRepo.findOne(phoneNumber);
+		
+		boolean deviceRemoved = false;
+
+		if(device.getAccount() != null && device.getAccount().equals(account)) {
+			device.setAccount(null);
+			deviceRepo.save(device);
+			deviceRemoved = true;
+		}
+		
+		return deviceRemoved;
 	}
 }

@@ -140,7 +140,7 @@
 				android:layout_marginTop="22dp"
 				android:layout_marginLeft="60dp"
 				android:layout_marginRight="60dp"
-				android:text="@string/accountPhoneNumber"
+				android:text="@string/accountPhoneNumberText"
 				android:textColor="#FFFFFF"
 				android:textSize="15sp" />
 			

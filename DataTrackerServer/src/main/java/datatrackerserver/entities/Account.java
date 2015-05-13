@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import datatrackerserver.security.SecurityManager;
+import datatrackerstandards.settings.AccountSetting;
 
 @Entity
 public class Account {
@@ -29,25 +30,14 @@ public class Account {
 	@JsonIgnore
 	private String validationCode;
 	
-	private long quota;
+	private int quota;
 	
-	private long threshold;
+	private int threshold;
 	
-	private int billingCycleLength;
+	private int billingCycleStart;
 
 	@OneToMany(mappedBy = "account")
 	private Set<Device> devices = new HashSet<>();
-
-	protected Account() {}
-	
-	public Account(String phoneNumber, String password, String email, long quota, long threshold) {
-		this.phoneNumber = phoneNumber;
-		this.password = password;
-		this.quota = quota;
-		this.threshold = threshold;
-		this.email = email;
-		this.validationCode = SecurityManager.generateRandomCode();
-	}
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -85,7 +75,7 @@ public class Account {
 		return quota;
 	}
 
-	public void setQuota(long quota) {
+	public void setQuota(int quota) {
 		this.quota = quota;
 	}
 
@@ -93,16 +83,16 @@ public class Account {
 		return threshold;
 	}
 
-	public void setThreshold(long threshold) {
+	public void setThreshold(int threshold) {
 		this.threshold = threshold;
 	}
 
-	public int getBillingCycleLength() {
-		return billingCycleLength;
+	public int getBillingCycleStart() {
+		return billingCycleStart;
 	}
 
-	public void setBillingCycleLength(int billingCycleLength) {
-		this.billingCycleLength = billingCycleLength;
+	public void setBillingCycleStart(int billingCycleLength) {
+		this.billingCycleStart = billingCycleLength;
 	}
 
 	public Set<Device> getDevices() {
@@ -125,5 +115,39 @@ public class Account {
 	public String toString() {
 		return String.format("Account[Phone Number='%s', Password='%s', Quota=%d, Threshold=%d, Email='%s']",
 				phoneNumber, password, quota, threshold, email);
+	}
+
+	protected Account() {
+		setDefaults();
+	}
+	
+	public Account(String phoneNumber, String password, String email) {
+		this.phoneNumber = phoneNumber;
+		this.password = password;
+		this.email = email;
+		this.validationCode = SecurityManager.generateRandomCode();	
+		setDefaults();
+	}
+	
+	public Account(String phoneNumber, String password, String email, int quota, int threshold, int billingCycle) {
+		this.phoneNumber = phoneNumber;
+		this.password = password;
+		this.email = email;
+		this.quota = quota;
+		this.threshold = threshold;
+		this.billingCycleStart = billingCycle;
+		this.validationCode = SecurityManager.generateRandomCode();
+	}	
+	
+	private void setDefaults() {
+		try {
+			for(AccountSetting setting : AccountSetting.values()) {
+				setting.getSettingField().set(this, setting.getDefaultValue());
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }

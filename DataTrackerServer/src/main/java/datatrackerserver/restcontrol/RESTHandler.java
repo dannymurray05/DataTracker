@@ -24,12 +24,12 @@ import datatrackerserver.entitymanagement.AccountHandler;
 import datatrackerserver.entitymanagement.DataHandler;
 import datatrackerserver.entitymanagement.DeviceHandler;
 import datatrackerstandards.AccountRegistrationStatus;
-import datatrackerstandards.AccountSettings;
 import datatrackerstandards.AccountValidationStatus;
 import datatrackerstandards.DataTrackerConstants;
 import datatrackerstandards.DeviceRegistrationStatus;
-import datatrackerstandards.DeviceSettings;
 import datatrackerstandards.DeviceValidationStatus;
+import datatrackerstandards.settings.AccountSetting;
+import datatrackerstandards.settings.DeviceSetting;
 
 @Component
 @RestController
@@ -75,8 +75,10 @@ public class RESTHandler {
     @ResponseBody 
 	public ResponseEntity<String> registerDevice(@RequestParam(value="phoneNumber") String phoneNumber,
 			@RequestParam(value = "accountPhoneNumber") String accountPhoneNumber) {
-		DeviceRegistrationStatus status = appContext.getBean(DeviceHandler.class).registerDevice(phoneNumber, accountPhoneNumber);
+		DeviceHandler deviceHandler = appContext.getBean(DeviceHandler.class);
+		DeviceRegistrationStatus status = deviceHandler.registerDevice(phoneNumber, accountPhoneNumber);
        	System.out.println(status.getStatusMessage());
+       	//Device device = deviceHandler.getDeviceSettings(accountPhoneNumber);
 		return new ResponseEntity<String>(status.name(), status.getSuccess() ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
 	}
 
@@ -92,6 +94,25 @@ public class RESTHandler {
 		}
 		else {
 			return new ResponseEntity<String>("Invalid code", HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	@RequestMapping(value = "/remove_device")
+    @ResponseBody 
+	public ResponseEntity<String> removeDevice(@RequestParam(value="phoneNumber") String phoneNumber,
+			@RequestParam(value = "accountPhoneNumber") String accountPhoneNumber,
+			@RequestParam(value = "password") String password) {
+		if(appContext.getBean(AccountHandler.class).validateAccountAndPassword(accountPhoneNumber, password) == null) {
+			return new ResponseEntity<String>("Invalid account number or password", HttpStatus.UNAUTHORIZED);
+		}
+
+		boolean removed = appContext.getBean(AccountHandler.class).removeDevice(phoneNumber, accountPhoneNumber);
+		
+		if(removed) {
+			return new ResponseEntity<String>("Device removed", HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<String>("Device removal failed", HttpStatus.UNAUTHORIZED);
 		}
 	}
 
@@ -165,27 +186,48 @@ public class RESTHandler {
 
     @RequestMapping(value = "/request_device_settings")
     @ResponseBody
-    public Device requestDeviceSettings(@RequestParam(value="phoneNumber") String phoneNumber) {
+    public Device requestDeviceSettings(@RequestParam(value="phoneNumber") String phoneNumber,
+    		HttpServletResponse response) {
         Device device = appContext.getBean(DeviceHandler.class).getDeviceSettings(phoneNumber);
 
-        return device;
+    	if(device != null) {
+    		response.setStatus(HttpServletResponse.SC_OK);
+    		return device;
+    	}
+    	else {
+    		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    		return null;
+    	}
     }
 
-    
     @RequestMapping(value = "/request_account_settings")
     @ResponseBody
     public Account requestAccountSettings(@RequestParam(value="phoneNumber") String phoneNumber,
-    		@RequestParam(value="password") String password) {
-    	Account account = appContext.getBean(AccountHandler.class).getAccountSettings(phoneNumber, password);
+    		HttpServletResponse response) {
+    	Account account = appContext.getBean(AccountHandler.class).getAccountSettings(phoneNumber);
 
-        return account;
+    	if(account != null) {
+    		response.setStatus(HttpServletResponse.SC_OK);
+    		return account;
+    	}
+    	else {
+    		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    		return null;
+    	}
     }
 
     @RequestMapping(value = "/update_device_setting")
     @ResponseBody
     public ResponseEntity<String> updateDeviceSetting(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="setting") String settingStr, @RequestParam(value="value") String value) {
-    	DeviceSettings setting = DeviceSettings.valueOf(settingStr);
+    	DeviceSetting setting = null;
+    	try {
+    		setting = DeviceSetting.valueOf(settingStr);
+    	}
+    	catch(IllegalArgumentException e) {
+    		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+    	}
+
     	if(setting == null) {
     		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
     	}
@@ -205,7 +247,7 @@ public class RESTHandler {
     public ResponseEntity<String> updateAccountSetting(@RequestParam(value="phoneNumber") String phoneNumber,
     		@RequestParam(value="password") String password,
     		@RequestParam(value="setting") String settingStr, @RequestParam(value="value") String value) {
-    	AccountSettings setting = AccountSettings.valueOf(settingStr);
+    	AccountSetting setting = AccountSetting.valueOf(settingStr);
     	if(setting == null) {
     		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
     	}
@@ -223,9 +265,16 @@ public class RESTHandler {
     @RequestMapping(value = "/valid_device")
     @ResponseBody
     public ResponseEntity<String> validDevice(@RequestParam(value="phoneNumber") String phoneNumber) {
-    	DeviceValidationStatus status = appContext.getBean(DeviceHandler.class).validDevice(phoneNumber);
+    	DeviceHandler handler = appContext.getBean(DeviceHandler.class);
+    	DeviceValidationStatus status = handler.validDevice(phoneNumber);
+    	Account account = handler.getDeviceSettings(phoneNumber).getAccount();
+    	String accountPhoneNumber = "";
+    	if(account != null) {
+    		accountPhoneNumber = account.getPhoneNumber();
+    	}
        	System.out.println(status.getStatusMessage());
-       	return new ResponseEntity<String>(status.name(), status.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+       	return new ResponseEntity<String>(status.name() + ":" + accountPhoneNumber,
+       			status.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/valid_account")

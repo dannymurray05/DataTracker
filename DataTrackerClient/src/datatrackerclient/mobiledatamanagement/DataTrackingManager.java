@@ -1,4 +1,4 @@
-package datatrackerclient.mobiledatamanagment;
+package datatrackerclient.mobiledatamanagement;
 
 import java.util.Calendar;
 import java.util.LinkedHashSet;
@@ -35,13 +35,12 @@ public class DataTrackingManager extends Service implements Runnable {
 
 	//for previously tracked data counts, but for whatever reason,
 	//those counts were unable to be sent to the server 
-	public static final String BACKLOG_FILE_NAME = "BacklogDataFile";
-	public static final String BACKLOG_DATA = "BacklogData";
+	private static final String BACKLOG_FILE_NAME = "BacklogDataFile";
+	private static final String BACKLOG_DATA = "BacklogData";
 	private static final String DELIMITER = ":";
 	
 	@Override
 	public void onCreate() {
-		// TODO Auto-generated method stub
 		super.onCreate();
 		dataTracker = new MobileDataUsageTracker();
 
@@ -89,15 +88,17 @@ public class DataTrackingManager extends Service implements Runnable {
 		TelephonyManager phoneManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		//date:hour:dataUsage
 		String[] data = dataKey.split(DELIMITER);
-		ServerRequestHandler.makeRequest(RequestType.LOG_DATA,
+		ServerRequestHandler.logData(
 				new DataPushListener(dataKey),
 				new ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError arg0) {
-						VolleyLog.d("Data with key (%s) not pushed to server. Stored in backlog for future push attempts.", dataKey);
+						VolleyLog.d("Data with key (%s) not pushed to server. "
+								+ "Stored in backlog for future push attempts.", dataKey);
 					}
 				},
-				phoneManager.getLine1Number(), data[0], data[1], data[2]);
+				phoneManager.getLine1Number(), DataTrackerConstants.stringToDate(
+						data[0]), Integer.valueOf(data[1]), Long.valueOf(data[2]));
 	}
 
 	@Override

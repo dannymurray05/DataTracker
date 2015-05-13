@@ -62,10 +62,10 @@ public class DataHandler {
 		usageHistoryRepo.save(record);
 		
 		//debug
-		Iterable<UsageHistory> completeUsageHistory = usageHistoryRepo.findAll();
+		/*Iterable<UsageHistory> completeUsageHistory = usageHistoryRepo.findAll();
 		for(UsageHistory usageHistory : completeUsageHistory) {
 			System.out.println(usageHistory.toString());
-		}
+		}*/
 		//end debug
 		
 		return null; //success
@@ -77,9 +77,9 @@ public class DataHandler {
 		List<UsageHistory> usageHistoryRange = usageHistoryRepo.findByDateBetween(beginDate, endDate);
 		
 		//debug
-		for(UsageHistory uh : usageHistoryRange) {
+		/*for(UsageHistory uh : usageHistoryRange) {
 			System.out.println(uh.toString());
-		}
+		}*/
 		//end debug
 
 		return usageHistoryRange;
@@ -99,9 +99,9 @@ public class DataHandler {
 		}
 		
 		//debug
-		for(UsageHistory uh : usageHistoryRange) {
+		/*for(UsageHistory uh : usageHistoryRange) {
 			System.out.println(uh.toString());
-		}
+		}*/
 		//end debug
 
 		return usageHistoryRange;

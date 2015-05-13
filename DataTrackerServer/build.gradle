@@ -27,7 +27,7 @@ repositories {
     maven { url "https://repository.jboss.org/nexus/content/repositories/releases" }
     
     flatDir {
-    	dirs '../DataTrackerStandards/bin'
+    	dirs '../DataTrackerServer/libs'
     }
 }
 

@@ -15,8 +15,8 @@ import datatrackerserver.repositories.AccountRepository;
 import datatrackerserver.repositories.DeviceRepository;
 import datatrackerserver.security.SecurityManager;
 import datatrackerstandards.DeviceRegistrationStatus;
-import datatrackerstandards.DeviceSettings;
 import datatrackerstandards.DeviceValidationStatus;
+import datatrackerstandards.settings.DeviceSetting;
 
 @Configuration
 @EnableAutoConfiguration
@@ -109,7 +109,7 @@ public class DeviceHandler {
 		return device;
 	}
 
-	public boolean setDeviceSetting(String phoneNumber, DeviceSettings setting, String value) {
+	public boolean setDeviceSetting(String phoneNumber, DeviceSetting setting, String value) {
 		boolean success = false;
 		DeviceRepository deviceRepo = appContext.getBean(DeviceRepository.class);
 		Device device = deviceRepo.findOne(phoneNumber);

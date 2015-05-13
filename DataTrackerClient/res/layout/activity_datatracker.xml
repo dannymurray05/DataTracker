@@ -30,8 +30,6 @@
               android:textColorPrimary="#FFFFFF"
                >
 
-           
-
               <TextView
                   android:id="@+id/billing_textview"
                   android:layout_width="match_parent"
@@ -56,7 +54,7 @@
                   android:layout_marginLeft="20dp"
 				  android:layout_marginRight="20dp"
                   android:text="@string/datausage_text"
-                  android:textSize="20dp"
+                  android:textSize="20sp"
                    />
 
                <SeekBar
@@ -71,7 +69,41 @@
               
             </RelativeLayout>
             
-           <RelativeLayout  		
+          
+			<ScrollView
+			  android:id="@+id/settings_scroller" 
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content">
+			
+				<LinearLayout
+				  android:id="@+id/settings_view" 
+				  android:layout_width="match_parent"
+				  android:layout_height="wrap_content"
+				  android:orientation="vertical">
+				</LinearLayout>
+			  
+			</ScrollView>
+
+			<!--fragment android:name="datatrackerclient.mobiledatamanagement.DataTrackingDisplay"
+			    android:id="@+id/data_display" 
+          		android:layout_width="match_parent"
+			    android:layout_height="wrap_content">
+			</fragment>
+
+			<fragment android:name="datatrackerclient.settingsmanagement.AccountSettingsDisplay"
+			    android:id="@+id/account_display" 
+          		android:layout_width="match_parent"
+			    android:layout_height="wrap_content">
+			</fragment>
+			
+			<fragment android:name="datatrackerclient.settingsmanagement.UserSettingsDisplay"
+			    android:id="@+id/user_display" 
+          		android:layout_width="match_parent"
+			    android:layout_height="wrap_content">
+			</fragment-->
+
+
+           <!--RelativeLayout  		
           android:id="@+id/tab2"
       	  android:layout_width="wrap_content"
       	  android:layout_height="fill_parent"
@@ -187,7 +219,7 @@
         			android:layout_centerHorizontal="true"
                 />
             
-            </RelativeLayout>
+            </RelativeLayout-->
            
         </FrameLayout>
     </LinearLayout>

@@ -6,12 +6,15 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import datatrackerstandards.settings.DeviceSetting;
+
 @Entity
 public class Device {
 
 	@Id
 	private String phoneNumber;
 
+	@JsonIgnore
 	@ManyToOne
 	private Account account;
 
@@ -83,17 +86,35 @@ public class Device {
 	 */
 	public Device(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+		setDefaults();
 	}
 
 	/**
 	 * For when creating for a newly signed up account
 	 * @param phoneNumber
 	 * @param account
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 */
 	public Device(String phoneNumber, Account account) {
 		this.phoneNumber = phoneNumber;
 		this.account = account;
+		setDefaults();
 	}
-	
-	protected Device() {}
+
+	protected Device() {
+		setDefaults();
+	}
+
+	private void setDefaults() {
+		try {
+			for(DeviceSetting setting : DeviceSetting.values()) {
+				setting.getSettingField().set(this, setting.getDefaultValue());
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -25,5 +25,15 @@
     <string name="setcycle">Set (Day of the Month)</string>
     <string name="setquota">Quota:</string>
     <string name="threshold_limit">Threshold Limit:</string>
-    <string name="accountPhoneNumber">Account Phone Number: </string>
+    <string name="accountSettingsText">Account Settings</string>
+    <string name="saveSettingsText">Save</string>
+    <string name="revertSettingsText">Revert</string>
+    <string name="accountPhoneNumberText">Account Phone #:</string>
+    <string name="quotaText">Monthly Quota:</string>
+    <string name="thresholdText">Warning Threshold:</string><string name="devicePhoneNumberText">Device Phone #:</string>
+    <string name="deviceSettingsText">User Settings</string>
+    <string name="logoutText">Logout</string>
+    <string name="billingCycleText">Billing Cycle Start:</string>
+    <string name="autoTurnOff">Enforce Quota Limit</string>
+    <string name="removeDeviceText">Remove Device</string>
 </resources>

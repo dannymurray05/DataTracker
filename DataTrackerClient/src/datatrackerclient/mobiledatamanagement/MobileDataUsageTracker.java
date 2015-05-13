@@ -1,4 +1,4 @@
-package datatrackerclient.mobiledatamanagment;
+package datatrackerclient.mobiledatamanagement;
 
 import android.net.TrafficStats;
 

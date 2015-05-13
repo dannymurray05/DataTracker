@@ -1,0 +1,115 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/user_settings"
+android:name="datatrackerclient.settingsmanagement.AccountSettingsDisplay"
+android:layout_width="match_parent"
+android:layout_height="wrap_content" >
+
+	<RelativeLayout  		
+	android:id="@+id/tab2"
+	android:layout_width="wrap_content"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:textColorPrimary="#FFFFFF" >
+
+		<Button
+			android:id="@+id/add_devices"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			android:layout_centerHorizontal="true"
+			android:text="@string/add_text" />
+
+		<Button
+			android:id="@+id/delete_devices"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			  android:layout_below="@+id/add_devices"
+			android:layout_centerHorizontal="true"
+			android:text="@string/delete_text" />
+
+		<TextView
+			android:id="@+id/billing_cycle_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/delete_devices"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			android:text="@string/cycle_text"
+			android:textSize="20sp" />
+
+		<TextView
+			android:id="@+id/set_cycle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/billing_cycle_view"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="150dp"
+			android:layout_marginRight="150dp"
+			android:hint="@string/select_hint"
+			android:textSize="20sp" />
+						  
+		 <Button
+			android:id="@+id/get_cycle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/set_cycle"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			android:layout_centerHorizontal="true"
+			android:text="@string/setcycle" />
+
+		<TextView
+			android:id="@+id/quota_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/get_cycle"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			android:text="@string/setquota"
+			android:textSize="20sp" />
+
+		<SeekBar
+			android:id="@+id/set_quota"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_below="@+id/quota_view"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			android:layout_marginTop="22dp" />
+				 
+		<TextView
+			android:id="@+id/threshold_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/set_quota"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="20dp"
+			android:layout_marginLeft="50dp"
+			android:layout_marginRight="50dp"
+			android:text="@string/threshold_limit"
+			android:textSize="20sp" />
+
+		<EditText
+			android:id="@+id/threhold_limit"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="60dp"
+			android:layout_marginRight="60dp"
+			android:layout_below="@+id/threshold_view"
+			android:layout_centerHorizontal="true" />
+
+	</RelativeLayout>
+</fragment>

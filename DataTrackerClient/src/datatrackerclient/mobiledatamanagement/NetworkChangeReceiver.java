@@ -1,4 +1,4 @@
-package datatrackerclient.mobiledatamanagment;
+package datatrackerclient.mobiledatamanagement;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

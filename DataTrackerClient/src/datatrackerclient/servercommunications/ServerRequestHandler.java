@@ -42,6 +42,12 @@ public class ServerRequestHandler {
 		makeRequest(RequestType.VALIDATE_DEVICE, listener, errorListener, phoneNumber,
 				accountPhoneNumber, code);
 	}
+	
+	public static void removeDevice(Listener<String> listener, ErrorListener errorListener,
+			String phoneNumber, String accountPhoneNumber, String password) {
+		makeRequest(RequestType.REMOVE_DEVICE, listener, errorListener, phoneNumber,
+				accountPhoneNumber, password);
+	}
 
 	public static void logData(Listener<String> listener, ErrorListener errorListener,
 			String phoneNumber, Date date, int hour, long bytes) {
@@ -67,9 +73,9 @@ public class ServerRequestHandler {
 	}
 
 	public static void requestAccountSettings(Listener<String> listener, ErrorListener errorListener,
-			String phoneNumber, String password) {
+			String phoneNumber) {
 		makeRequest(RequestType.REQUEST_ACCOUNT_SETTINGS, listener, errorListener,
-				phoneNumber, password);
+				phoneNumber);
 	}
 
 	public static void updateDeviceSetting(Listener<String> listener, ErrorListener errorListener,

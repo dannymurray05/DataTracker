@@ -7,6 +7,7 @@ public enum AccountRegistrationStatus {
 	INVALID_EMAIL("Invalid email: Email address must be a valid email address.", false),
 	ACCOUNT_ALREADY_EXISTS("Account already exists: The phone number given is already in use.", false),
 	EMAIL_ALREADY_EXISTS("Email already exists: The email given is already in use.", false),
+	NO_SERVER_RESPONSE("No response from server!", false),
 	SUCCESS("Account successfully created.", true),
 	;
 
