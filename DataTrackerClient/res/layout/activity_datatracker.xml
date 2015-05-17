@@ -13,61 +13,19 @@
       <TabWidget 
       android:id="@android:id/tabs"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      >
-      </TabWidget>  
+      android:layout_height="wrap_content" />
         
       <FrameLayout
           android:id="@android:id/tabcontent"
       	  android:layout_width="match_parent"
       	  android:layout_height="match_parent">
         
-          <RelativeLayout
-              android:id="@+id/tab1"
-              android:layout_width="match_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
-              android:textColorPrimary="#FFFFFF"
-               >
-
-              <TextView
-                  android:id="@+id/billing_textview"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentLeft="true"           
-                  android:layout_alignParentTop="true"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="74dp"
-                  android:layout_marginLeft="20dp"
-				  android:layout_marginRight="20dp"
-                  android:text="@string/billing_text"
-                  android:textSize="20dp"
-                   />
-           
-               <TextView
-                  android:id="@+id/data_textview"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-    			  android:layout_below="@+id/billing_textview"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="30dp"
-                  android:layout_marginLeft="20dp"
-				  android:layout_marginRight="20dp"
-                  android:text="@string/datausage_text"
-                  android:textSize="20sp"
-                   />
-
-               <SeekBar
-                   android:id="@+id/status_bar"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentLeft="true"
-                   android:layout_below="@+id/data_textview"
-                   android:layout_marginLeft="20dp"
-				   android:layout_marginRight="20dp"
-                   android:layout_marginTop="22dp" />
-              
-            </RelativeLayout>
+			<LinearLayout
+			  android:id="@+id/data_usage_view" 
+			  android:layout_width="match_parent"
+			  android:layout_height="wrap_content"
+			  android:orientation="vertical">
+			</LinearLayout> 
             
           
 			<ScrollView
@@ -84,144 +42,8 @@
 			  
 			</ScrollView>
 
-			<!--fragment android:name="datatrackerclient.mobiledatamanagement.DataTrackingDisplay"
-			    android:id="@+id/data_display" 
-          		android:layout_width="match_parent"
-			    android:layout_height="wrap_content">
-			</fragment>
-
-			<fragment android:name="datatrackerclient.settingsmanagement.AccountSettingsDisplay"
-			    android:id="@+id/account_display" 
-          		android:layout_width="match_parent"
-			    android:layout_height="wrap_content">
-			</fragment>
-			
-			<fragment android:name="datatrackerclient.settingsmanagement.UserSettingsDisplay"
-			    android:id="@+id/user_display" 
-          		android:layout_width="match_parent"
-			    android:layout_height="wrap_content">
-			</fragment-->
-
-
-           <!--RelativeLayout  		
-          android:id="@+id/tab2"
-      	  android:layout_width="wrap_content"
-      	  android:layout_height="fill_parent"
-      	  android:orientation="vertical"
-      	  android:textColorPrimary="#FFFFFF"
-      	   >
-
-               <Button
-                   android:id="@+id/add_devices"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="20dp"
-                   android:layout_marginLeft="50dp"
-				   android:layout_marginRight="50dp"
-				   android:layout_centerHorizontal="true"
-                   android:text="@string/add_text" />
- 
- 
- 			<Button
-                   android:id="@+id/delete_devices"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="20dp"
-                   android:layout_marginLeft="50dp"
-				   android:layout_marginRight="50dp"
-				   android:layout_below="@+id/add_devices"
-				   android:layout_centerHorizontal="true"
-                   android:text="@string/delete_text" />
-               
-
-               
-              <TextView
-                  android:id="@+id/billing_cycle_view"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-    			  android:layout_below="@+id/delete_devices"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="20dp"
-                  android:layout_marginLeft="50dp"
-				  android:layout_marginRight="50dp"
-                  android:text="@string/cycle_text"
-                  android:textSize="20dp"
-                   />
-              
-            <TextView
-                  android:id="@+id/set_cycle"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-    			  android:layout_below="@+id/billing_cycle_view"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="20dp"
-                  android:layout_marginLeft="150dp"
-                  android:layout_marginRight="150dp"
-			      android:hint="@string/select_hint"
-                  android:textSize="20dp"
-                   />
-              
-             <Button
-                   android:id="@+id/get_cycle"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_below="@+id/set_cycle"
-                   android:layout_marginTop="20dp"
-                   android:layout_marginLeft="50dp"
-				   android:layout_marginRight="50dp"
-				   android:layout_centerHorizontal="true"
-                   android:text="@string/setcycle" />
-              
-
-               <TextView
-                  android:id="@+id/quota_view"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-    			  android:layout_below="@+id/get_cycle"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="10dp"
-                  android:layout_marginLeft="50dp"
-				  android:layout_marginRight="50dp"
-                  android:text="@string/setquota"
-                  android:textSize="20dp"
-                   />
-            <SeekBar
-                   android:id="@+id/set_quota"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentLeft="true"
-                   android:layout_below="@+id/quota_view"
-                   android:layout_marginLeft="50dp"
-				   android:layout_marginRight="50dp"
-                   android:layout_marginTop="22dp" />
-             
-             <TextView
-                  android:id="@+id/threshold_view"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-    			  android:layout_below="@+id/set_quota"
-                  android:layout_centerHorizontal="true"
-                  android:layout_marginTop="20dp"
-                  android:layout_marginLeft="50dp"
-				  android:layout_marginRight="50dp"
-                  android:text="@string/threshold_limit"
-                  android:textSize="20dp"
-                   />
-            
-             <EditText
-      			  android:id="@+id/threhold_limit"
-        			android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-        			android:layout_marginTop="10dp"
-			        android:layout_marginLeft="60dp"
-					android:layout_marginRight="60dp"
-			        android:layout_below="@+id/threshold_view"
-        			android:layout_centerHorizontal="true"
-                />
-            
-            </RelativeLayout-->
-           
         </FrameLayout>
+
     </LinearLayout>
 
 </TabHost>

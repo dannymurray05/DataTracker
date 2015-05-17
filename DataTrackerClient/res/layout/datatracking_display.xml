@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:textColorPrimary="#FFFFFF"
+  >
+	<LinearLayout
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:orientation="horizontal"
+	  android:textColorPrimary="#FFFFFF"
+	  >
+		<TextView
+		  android:id="@+id/accountDataUsageLabel"
+		  android:layout_width="match_parent"
+		  android:layout_height="wrap_content"
+		  android:layout_marginLeft="20dp"
+		  android:layout_marginRight="20dp"
+		  android:layout_marginTop="30dp"
+		  android:text="@string/account_datausage_text"
+		  android:textSize="20sp"
+		  />
+
+		<TextView
+		  android:id="@+id/accountDataUsageDisplay"
+		  android:layout_width="match_parent"
+		  android:layout_height="wrap_content"
+		  android:layout_marginLeft="20dp"
+		  android:layout_marginRight="20dp"
+		  android:layout_marginTop="30dp"
+		  android:textSize="30sp"
+		  />
+	</LinearLayout>
+
+	<ProgressBar
+	  android:id="@+id/accountDataUsageBar"
+	  style="@android:style/Widget.ProgressBar.Horizontal"
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginLeft="20dp"
+	  android:layout_marginRight="20dp"
+	  android:layout_marginTop="20dp"
+	  />
+
+	<LinearLayout
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:orientation="horizontal"
+	  android:textColorPrimary="#FFFFFF"
+	  >
+		<TextView
+		  android:id="@+id/deviceDataUsageLabel"
+		  android:layout_width="match_parent"
+		  android:layout_height="wrap_content"
+		  android:layout_marginLeft="20dp"
+		  android:layout_marginRight="20dp"
+		  android:layout_marginTop="30dp"
+		  android:text="@string/device_datausage_text"
+		  android:textSize="20sp"
+		  />
+
+		<TextView
+		  android:id="@+id/deviceDataUsageDisplay"
+		  android:layout_width="match_parent"
+		  android:layout_height="wrap_content"
+		  android:layout_marginLeft="20dp"
+		  android:layout_marginRight="20dp"
+		  android:layout_marginTop="30dp"
+		  android:textSize="30sp"
+		  />
+	</LinearLayout>
+
+	<ProgressBar
+	  android:id="@+id/deviceDataUsageBar"
+	  style="@android:style/Widget.ProgressBar.Horizontal"
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginLeft="20dp"
+	  android:layout_marginRight="20dp"
+	  android:layout_marginTop="20dp"
+	  />
+
+</LinearLayout>

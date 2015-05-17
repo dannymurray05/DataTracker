@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import datatrackerserver.entities.Account;
 
 public enum AccountSetting implements Setting<Account> {
-	QUOTA(SettingType.INT, 1 << 20),
+	QUOTA(SettingType.INT, 1 << 10),
 	THRESHOLD(SettingType.INT, 95),
 	BILLING_CYCLE(SettingType.INT, 1),
 	;

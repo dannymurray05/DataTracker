@@ -1,4 +1,4 @@
-package datatrackerclient.sessionmanagement;
+package com.csc258.datatrackerclient.sessionmanagement;
 
 
 import java.beans.PropertyChangeEvent;
@@ -17,9 +17,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.datatrackerclient.R;
+import com.csc258.datatrackerclient.R;
+import com.csc258.datatrackerclient.sessionmanagement.SessionManager.SessionStatus;
 
-import datatrackerclient.sessionmanagement.SessionManager.SessionStatus;
 import datatrackerstandards.AccountValidationStatus;
 import datatrackerstandards.DeviceValidationStatus;
 

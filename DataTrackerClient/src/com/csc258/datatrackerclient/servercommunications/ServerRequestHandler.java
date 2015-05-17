@@ -1,4 +1,4 @@
-package datatrackerclient.servercommunications;
+package com.csc258.datatrackerclient.servercommunications;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,9 +62,9 @@ public class ServerRequestHandler {
 	}
 	
 	public static void requestAccountData(Listener<String> listener, ErrorListener errorListener,
-			String phoneNumber, String password, Date beginDate, Date endDate) {
+			String phoneNumber, Date beginDate, Date endDate) {
 		makeRequest(RequestType.REQUEST_ACCOUNT_DATA, listener, errorListener, phoneNumber,
-				password, formatDate(beginDate), formatDate(endDate));
+				formatDate(beginDate), formatDate(endDate));
 	}
 
 	public static void requestDeviceSettings(Listener<String> listener, ErrorListener errorListener,

@@ -1,7 +1,8 @@
-package datatrackerclient.settingsmanagement;
+package com.csc258.datatrackerclient.settingsmanagement;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -16,28 +17,35 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.example.datatrackerclient.R;
+import com.csc258.datatrackerclient.R;
 
+import datatrackerstandards.settings.AccountSetting;
 import datatrackerstandards.settings.DeviceSetting;
 
 public class DeviceSettingsDisplay extends Fragment implements PropertyChangeListener, OnSeekBarChangeListener, OnClickListener  {
-	Activity parent;
-	SettingsManager settingsManager;
+	private Activity parent;
+	private SettingsManager settingsManager;
+	private PropertyChangeSupport propertyChangeHandler;
 	
-	String devicePhoneNumber;
+	public static final String QUOTA_BAR = "quotaBar";
+	
+	private String devicePhoneNumber;
 	
 	//Settings widgets
-	TextView phoneDisplay;
-	TextView quotaDisplay;
-	SeekBar quotaBar;
-	TextView thresholdDisplay;
-	SeekBar thresholdBar;
-	CheckBox autoTurnOffSelection;
+	private TextView phoneDisplay;
+	private TextView quotaDisplay;
+	private int oldQuota = 0;
+	private SeekBar deviceQuotaBar;
+	private TextView thresholdDisplay;
+	private SeekBar thresholdBar;
+	private CheckBox autoTurnOffSelection;
 	
-	Button removeDeviceButton;
+	private Button removeDeviceButton;
+	
 	
 	public DeviceSettingsDisplay(String phoneNumber) {
 		this.devicePhoneNumber = phoneNumber;
+		propertyChangeHandler = new PropertyChangeSupport(this);
 	}
 
 	@Override
@@ -50,11 +58,11 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 		thresholdDisplay = (TextView)view.findViewById(R.id.thresholdDisplay);
 		phoneDisplay.setText(devicePhoneNumber);
 		
-		quotaBar = (SeekBar)view.findViewById(R.id.quotaSeekBar);
+		deviceQuotaBar = (SeekBar)view.findViewById(R.id.quotaSeekBar);
 		thresholdBar = (SeekBar)view.findViewById(R.id.thresholdSeekBar);
-		quotaBar.setOnSeekBarChangeListener(this);	
+		deviceQuotaBar.setOnSeekBarChangeListener(this);	
 		thresholdBar.setOnSeekBarChangeListener(this);
-		quotaBar.setMax(1 << 22); //in KB, so about 4 GB max...
+		deviceQuotaBar.setMax(AccountSettingsDisplay.MAX_QUOTA); //in KB, so about 4 GB max...
 		thresholdBar.setMax(100); //for precision to YYY.YY%
 		
 		autoTurnOffSelection = (CheckBox)view.findViewById(R.id.autoTurnOff);
@@ -62,7 +70,9 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 		removeDeviceButton = (Button)view.findViewById(R.id.removeDeviceButton);
 		removeDeviceButton.setOnClickListener(this);
 
+		setMaxQuota((int)settingsManager.getAccountSetting(AccountSetting.QUOTA));
 		syncWithLocalSettings();
+
 
 		return view;
 	}
@@ -71,7 +81,11 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		this.parent = activity;
-		settingsManager = SettingsManager.getInstance(parent, this);
+
+		settingsManager = SettingsManager.getInstance(parent, this, SettingsManager.SETTINGS);
+		for(DeviceSetting setting : DeviceSetting.values()) {
+			settingsManager.addListener(this, devicePhoneNumber + ":" + setting.name());
+		}
 	}	
 
 	@Override
@@ -106,7 +120,7 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 		//this will effectively revert those changes locally.
 		else {
 			String[] setting = property.split(":");
-			if(setting.length <= 1 || !setting[0].equals("device")) {
+			if(setting.length <= 1 || !setting[0].equals(devicePhoneNumber)) { //TODO CHANGE TO NUMBER
 				return;
 			}
 			DeviceSetting changedSetting = null;
@@ -144,7 +158,7 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 				settingsManager.setDeviceSetting(devicePhoneNumber, setting, autoTurnOffSelection.isChecked());	
 				break;
 			case QUOTA:
-				settingsManager.setDeviceSetting(devicePhoneNumber, setting, quotaBar.getProgress());	
+				settingsManager.setDeviceSetting(devicePhoneNumber, setting, deviceQuotaBar.getProgress());	
 				break;
 			case THRESHOLD:
 				settingsManager.setDeviceSetting(devicePhoneNumber, setting, thresholdBar.getProgress());
@@ -153,10 +167,34 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 				break;
 		}
 	}
+	
+	public String getDevicePhoneNumber() {
+		return devicePhoneNumber;
+	}
+	
+	public int getQuotaDisplay() {
+		return deviceQuotaBar.getProgress();
+	}
+	
+	/*private int getThresholdDisplay() {
+		return thresholdBar.getProgress();
+	}
+	
+	private boolean getAutoTurnOff() {
+		return autoTurnOffSelection.isChecked();
+	}*/
+
+	public void setMaxQuota(int quota) {
+		deviceQuotaBar.setMax(quota);
+	}
 
 	private void setQuotaDisplay(int quota) {
-		quotaBar.setProgress(quota);
-		quotaDisplay.setText(String.valueOf(quotaBar.getProgress()));
+		deviceQuotaBar.setProgress(quota);
+		quotaDisplay.setText(String.valueOf(deviceQuotaBar.getProgress()));
+	}
+	
+	public void addToQuotaDisplay(int quotaAddition) {
+		setQuotaDisplay(deviceQuotaBar.getProgress() + quotaAddition);
 	}
 
 	private void setThresholdDisplay(int threshold) {
@@ -165,11 +203,11 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 	}
 	
 	private void setAutoTurnOff(boolean autoTurnOff) {
-		this.autoTurnOffSelection.setChecked(autoTurnOff);
+		autoTurnOffSelection.setChecked(autoTurnOff);
 	}
 
 
-	//TODO get each device fragment to implement this and call their parent fragment if they have one
+	//get each device fragment to implement this and call their parent fragment if they have one
 	//all the bars will be disabled for user settings so they won't call anything
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
@@ -177,10 +215,13 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 		//if from user, update all other quota seekBars so sum of subquotas equals total quota
 		//otherwise ignore
 		if(fromUser) {
-			if(seekBar == quotaBar) {
-				//TODO update quotas to make always equal to account quota total
+			if(seekBar == deviceQuotaBar) {
+				//update quotas to make always equal to account quota total
 				//Log.d("SettingsDisplay", "Updating quotas...");
-				quotaDisplay.setText(String.valueOf(quotaBar.getProgress()));
+				quotaDisplay.setText(String.valueOf(deviceQuotaBar.getProgress()));
+				
+				propertyChangeHandler.firePropertyChange(QUOTA_BAR + ":" + devicePhoneNumber, oldQuota, progress);
+				oldQuota = deviceQuotaBar.getProgress();
 			}
 			else if(seekBar == thresholdBar) {
 				thresholdDisplay.setText(String.valueOf(thresholdBar.getProgress()));
@@ -190,12 +231,16 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
-		
+		if(seekBar == deviceQuotaBar) {
+			oldQuota = deviceQuotaBar.getProgress();
+		}
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-		
+		if(seekBar == deviceQuotaBar) {
+			oldQuota = deviceQuotaBar.getProgress();
+		}
 	}
 
 	public void syncWithLocalSettings() {
@@ -219,5 +264,13 @@ public class DeviceSettingsDisplay extends Fragment implements PropertyChangeLis
 		if(v.equals(this.removeDeviceButton)) {
 			settingsManager.removeDevice(devicePhoneNumber);
 		}
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeHandler.addPropertyChangeListener(listener);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propertyChangeHandler.removePropertyChangeListener(listener);
 	}
 }

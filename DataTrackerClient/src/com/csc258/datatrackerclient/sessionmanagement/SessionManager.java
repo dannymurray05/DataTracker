@@ -1,4 +1,4 @@
-package datatrackerclient.sessionmanagement;
+package com.csc258.datatrackerclient.sessionmanagement;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -10,8 +10,8 @@ import android.content.SharedPreferences.Editor;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.csc258.datatrackerclient.servercommunications.ServerRequestHandler;
 
-import datatrackerclient.servercommunications.ServerRequestHandler;
 import datatrackerstandards.AccountRegistrationStatus;
 import datatrackerstandards.AccountValidationStatus;
 import datatrackerstandards.DeviceRegistrationStatus;
@@ -35,7 +35,8 @@ public class SessionManager {
 	private String phoneNumber = null;
 	private String accountNumber = null;
 	private String password = null;
-	
+
+	//property change strings
 	public static final String SESSION_STATUS = "sessionStatus";
 	public static final String DEVICE_LOGIN_ERROR = "deviceLoginError";
 	public static final String ACCOUNT_LOGIN_ERROR = "accountLoginError";
@@ -44,6 +45,7 @@ public class SessionManager {
 	public static final String DEVICE_LOGIN_SUCCESS = "deviceLoginSuccess";
 	public static final String DEVICE_REGISTRATION_SUCCESS = "deviceRegistrationSuccess";
 
+	//storage strings
 	private static final String SESSION_FILE = "sessionFile";
 	private static final String PHONE_NUMBER = "phoneNumber";
 	private static final String ACCOUNT_NUMBER = "accountNumber";
@@ -61,6 +63,10 @@ public class SessionManager {
 	}
 	
 	public static SessionManager getInstance(Context context, PropertyChangeListener listener) {
+		return getInstance(context, listener, null);
+	}
+
+	public static SessionManager getInstance(Context context, PropertyChangeListener listener, String property) {
 		if(context == null) {
 			return null;
 		}
@@ -72,12 +78,14 @@ public class SessionManager {
 				mInstance.setContext(context);
 			}
 
-			PropertyChangeListener[] listeners =
-					mInstance.getPropertyChangeHandler().getPropertyChangeListeners();
-			if(listeners.length > 0) {
-				mInstance.getPropertyChangeHandler().removePropertyChangeListener(listeners[0]);
+			if(property == null) {
+				mInstance.getPropertyChangeHandler().removePropertyChangeListener(listener);
+				mInstance.getPropertyChangeHandler().addPropertyChangeListener(listener);
 			}
-			mInstance.getPropertyChangeHandler().addPropertyChangeListener(listener);
+			else {
+				mInstance.getPropertyChangeHandler().removePropertyChangeListener(property, listener);
+				mInstance.getPropertyChangeHandler().addPropertyChangeListener(property, listener);
+			}
 		}
 
 		return mInstance;
@@ -99,7 +107,7 @@ public class SessionManager {
 		return sessionStatus;
 	}
 
-	public String getPhoneNumber() {
+	public String getDeviceNumber() {
 		return phoneNumber;
 	}
 
@@ -210,7 +218,14 @@ public class SessionManager {
 			if(arg0 != null) {
 				String[] response = arg0.split(":");
 
-                DeviceValidationStatus status = DeviceValidationStatus.valueOf(new String(response[0]));
+				DeviceValidationStatus status = null;
+				try {
+					status = DeviceValidationStatus.valueOf(new String(response[0]));
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					return;
+				}
 
                 String accountPhoneNumber;
                 if(response.length == 1 || response[1] == null) {
@@ -238,12 +253,20 @@ public class SessionManager {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-                DeviceValidationStatus error = DeviceValidationStatus.valueOf(new String(arg0.networkResponse.data));
+                DeviceValidationStatus error = null;
+				try {
+					error = DeviceValidationStatus.valueOf(new String(arg0.networkResponse.data));
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					return;
+				}
                 propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_ERROR, null, error);
 			}
 			else {
                 propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_ERROR, null, DeviceValidationStatus.NO_SERVER_RESPONSE);
 			}
+			setSessionStatus(SessionStatus.LOGGED_OUT);
 		}
 	}
 	
@@ -251,12 +274,20 @@ public class SessionManager {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-				AccountValidationStatus error = AccountValidationStatus.valueOf(new String(arg0.networkResponse.data));
+				AccountValidationStatus error;
+				try {
+					error = AccountValidationStatus.valueOf(new String(arg0.networkResponse.data));
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					return;
+				}
 				propertyChangeHandler.firePropertyChange(ACCOUNT_LOGIN_ERROR, null, error);
 			}
 			else {
 				propertyChangeHandler.firePropertyChange(ACCOUNT_LOGIN_ERROR, null, AccountValidationStatus.NO_SERVER_RESPONSE);
 			}
+			setSessionStatus(SessionStatus.LOGGED_OUT);
 		}
 	}
 
@@ -264,8 +295,15 @@ public class SessionManager {
 		@Override
 		public void onResponse(String arg0) {
 			if(arg0 != null) {
-                DeviceRegistrationStatus status = DeviceRegistrationStatus.valueOf(new String(arg0));
-                propertyChangeHandler.firePropertyChange(DEVICE_LOGIN_SUCCESS, null, status);
+				DeviceRegistrationStatus status;
+				try {
+					status = DeviceRegistrationStatus.valueOf(new String(arg0));
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					return;
+				}
+                propertyChangeHandler.firePropertyChange(DEVICE_REGISTRATION_SUCCESS, null, status);
 			}
 			setSessionStatus(SessionStatus.DEVICE_ONLY);
 		}
@@ -282,7 +320,13 @@ public class SessionManager {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-				DeviceRegistrationStatus error = DeviceRegistrationStatus.valueOf(new String(arg0.networkResponse.data));
+				DeviceRegistrationStatus error;
+				try {
+					error = DeviceRegistrationStatus.valueOf(new String(arg0.networkResponse.data));
+				}
+				catch(Exception e) {
+					return;
+				}
 				propertyChangeHandler.firePropertyChange(DEVICE_SIGNUP_ERROR, null, error);
 			}
 			else {
@@ -295,7 +339,13 @@ public class SessionManager {
 		@Override
 		public void onErrorResponse(VolleyError arg0) {
 			if(arg0.networkResponse != null) {
-				AccountRegistrationStatus error = AccountRegistrationStatus.valueOf(new String(arg0.networkResponse.data));
+				AccountRegistrationStatus error;
+				try {
+					error = AccountRegistrationStatus.valueOf(new String(arg0.networkResponse.data));
+				}
+				catch(Exception e) {
+					return;
+				}
 				propertyChangeHandler.firePropertyChange(ACCOUNT_SIGNUP_ERROR, null, error);
 			}
 			else {

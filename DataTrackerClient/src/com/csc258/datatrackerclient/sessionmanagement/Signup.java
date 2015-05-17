@@ -1,4 +1,4 @@
-package datatrackerclient.sessionmanagement;
+package com.csc258.datatrackerclient.sessionmanagement;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,9 +14,9 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.example.datatrackerclient.R;
+import com.csc258.datatrackerclient.R;
+import com.csc258.datatrackerclient.sessionmanagement.SessionManager.SessionStatus;
 
-import datatrackerclient.sessionmanagement.SessionManager.SessionStatus;
 import datatrackerstandards.AccountRegistrationStatus;
 import datatrackerstandards.DeviceRegistrationStatus;
 

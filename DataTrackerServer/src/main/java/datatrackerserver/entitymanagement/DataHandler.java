@@ -10,12 +10,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import datatrackerserver.entities.Account;
 import datatrackerserver.entities.Device;
 import datatrackerserver.entities.UsageHistory;
 import datatrackerserver.entities.UsageHistoryId;
-import datatrackerserver.entities.Account;
-import datatrackerserver.repositories.UsageHistoryRepository;
 import datatrackerserver.repositories.AccountRepository;
+import datatrackerserver.repositories.UsageHistoryRepository;
+import datatrackerstandards.DataError;
 
 @Configuration
 @EnableAutoConfiguration
@@ -29,21 +30,6 @@ public class DataHandler {
 	
 	//public static final long 
 	
-	public static enum DataError {
-		INVALID_DATA("Invalid data for log request."),
-		;
-
-		public final String errorMessage;
-
-		DataError(String message) {
-			errorMessage = message;
-		}
-		
-		public String getErrorMessage() {
-			return errorMessage;
-		}
-	}
-
 	public DataError logData(String phoneNumber, Date date, int hour, int bytes) {
 		UsageHistoryRepository usageHistoryRepo = appContext.getBean(UsageHistoryRepository.class);
 		
@@ -54,9 +40,10 @@ public class DataHandler {
 			record = new UsageHistory(phoneNumber, date);
 		}
 
-		if(!record.insertData(hour, bytes)) {
-			System.out.println(DataError.INVALID_DATA.getErrorMessage());
-			return DataError.INVALID_DATA;
+		DataError error = record.insertData(hour, bytes);
+
+		if(error != null) {
+			return error;
 		}
 
 		usageHistoryRepo.save(record);

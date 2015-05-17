@@ -1,4 +1,4 @@
-package datatrackerclient.settingsmanagement;
+package com.csc258.datatrackerclient.settingsmanagement;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,9 +18,9 @@ import android.util.Log;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.csc258.datatrackerclient.servercommunications.ServerRequestHandler;
+import com.csc258.datatrackerclient.sessionmanagement.SessionManager;
 
-import datatrackerclient.servercommunications.ServerRequestHandler;
-import datatrackerclient.sessionmanagement.SessionManager;
 import datatrackerstandards.settings.AccountSetting;
 import datatrackerstandards.settings.DeviceSetting;
 
@@ -54,6 +54,10 @@ public class SettingsManager implements PropertyChangeListener {
 	}
 
 	public static SettingsManager getInstance(Context context, PropertyChangeListener listener) {
+		return getInstance(context, listener, null);
+	}
+	
+	public static SettingsManager getInstance(Context context, PropertyChangeListener listener, String property) {
 		if(context == null) {
 			return null;
 		}
@@ -65,11 +69,44 @@ public class SettingsManager implements PropertyChangeListener {
 				mInstance.setContext(context);
 			}
 
-			mInstance.getPropertyChangeHandler().removePropertyChangeListener(listener);
-			mInstance.getPropertyChangeHandler().addPropertyChangeListener(listener);
+			if(property == null) {
+				mInstance.getPropertyChangeHandler().removePropertyChangeListener(listener);
+				mInstance.getPropertyChangeHandler().addPropertyChangeListener(listener);
+			}
+			else {
+				mInstance.getPropertyChangeHandler().removePropertyChangeListener(property, listener);
+				mInstance.getPropertyChangeHandler().addPropertyChangeListener(property, listener);
+
+			}
 		}
 
 		return mInstance;
+	}
+
+	public void addListener(PropertyChangeListener listener) {
+		addListener(listener, null);
+	}
+
+	public void addListener(PropertyChangeListener listener, String property) {
+		if(property == null) {
+			propertyChangeHandler.addPropertyChangeListener(listener);
+		}
+		else {
+			propertyChangeHandler.addPropertyChangeListener(property, listener);
+		}
+	}
+
+	public void removeListener(PropertyChangeListener listener) {
+		removeListener(listener, null);
+	}
+
+	public void removeListener(PropertyChangeListener listener, String property) {
+		if(property == null) {
+			propertyChangeHandler.removePropertyChangeListener(listener);
+		}
+		else {
+			propertyChangeHandler.removePropertyChangeListener(property, listener);
+		}
 	}
 
 	public void syncSettings() {
@@ -93,7 +130,7 @@ public class SettingsManager implements PropertyChangeListener {
 			public void onErrorResponse(VolleyError arg0) {
 				Log.d("Settings", "Error getting account settings!");
 			}
-		}, session.getPhoneNumber());
+		}, session.getAccountNumber());
 		
 	}
 
@@ -191,7 +228,7 @@ public class SettingsManager implements PropertyChangeListener {
 		Object oldValue = getAccountSetting(setting);
 		ServerRequestHandler.updateAccountSetting(new AccountSettingsListener(setting, oldValue, value),
 				new AccountSettingsErrorListener(setting, oldValue),
-				session.getPhoneNumber(), session.getPassword(),
+				session.getAccountNumber(), session.getPassword(),
 				setting.name(), setting.getType().getClazz().cast(value).toString());
 	}
 
@@ -200,11 +237,13 @@ public class SettingsManager implements PropertyChangeListener {
 	}
 
 	public void setLocalAccountSetting(AccountSetting setting, Object oldValue, Object value) {
-		SharedPreferences settingsFile = mContext.getSharedPreferences(
-				getAccountSettingsFile(), Context.MODE_PRIVATE);
-		Editor editor = settingsFile.edit();
-		setLocalAccountSetting(editor, setting, value);
-		editor.commit();
+		if(!oldValue.equals(value)) {
+			SharedPreferences settingsFile = mContext.getSharedPreferences(
+					getAccountSettingsFile(), Context.MODE_PRIVATE);
+			Editor editor = settingsFile.edit();
+			setLocalAccountSetting(editor, setting, value);
+			editor.commit();
+		}
 		propertyChangeHandler.firePropertyChange("account:" + setting.name(), oldValue, value);
 	}
 	
@@ -255,13 +294,14 @@ public class SettingsManager implements PropertyChangeListener {
 		Object oldValue = getDeviceSetting(phoneNumber, setting);
 		ServerRequestHandler.updateDeviceSetting(new DeviceSettingsListener(
 				phoneNumber, setting, oldValue, value),
-				new DeviceSettingsErrorListener(setting, oldValue), session.getPhoneNumber(),
+				new DeviceSettingsErrorListener(phoneNumber, setting, oldValue), phoneNumber,
 				setting.name(), setting.getType().getClazz().cast(value).toString());
 	}
 
 	public void setLocalDeviceSetting(String phoneNumber, DeviceSetting setting, Object value) {
 		setLocalDeviceSetting(phoneNumber, setting, null, value);
 	}
+
 	public void setLocalDeviceSetting(String phoneNumber,
 			DeviceSetting setting, Object oldValue, Object value) {
 		SharedPreferences settingsFile = mContext.getSharedPreferences(
@@ -269,7 +309,8 @@ public class SettingsManager implements PropertyChangeListener {
 		Editor editor = settingsFile.edit();
 		setLocalDeviceSetting(editor, setting, value);
 		editor.commit();
-		propertyChangeHandler.firePropertyChange("device:" + setting.name(), oldValue, value);
+		//fire *device specific* property change for this setting
+		propertyChangeHandler.firePropertyChange(phoneNumber + ":" + setting.name(), oldValue, value);
 	}
 	
 	public void setLocalDeviceSetting(Editor editor, DeviceSetting setting, Object value) {
@@ -306,7 +347,7 @@ public class SettingsManager implements PropertyChangeListener {
 						Log.d("SettingsManager", "Server did not remove device!");
 					}
 				},
-				deviceNum, session.getPhoneNumber(), session.getPassword());
+				deviceNum, session.getAccountNumber(), session.getPassword());
 	}
 
 	public Context getContext() {
@@ -366,7 +407,7 @@ public class SettingsManager implements PropertyChangeListener {
 
 		@Override
 		public void onErrorResponse(VolleyError response) {
-			propertyChangeHandler.firePropertyChange(setting.name(), oldValue, oldValue);
+			setLocalAccountSetting(setting, oldValue, oldValue);
 		}
 	}
 
@@ -391,16 +432,19 @@ public class SettingsManager implements PropertyChangeListener {
 	}
 
 	private class DeviceSettingsErrorListener implements ErrorListener {
+		String phoneNumber;
 		DeviceSetting setting;
 		Object oldValue;
 
-		public DeviceSettingsErrorListener(DeviceSetting setting, Object oldValue) {
+		public DeviceSettingsErrorListener(String phoneNumber, DeviceSetting setting, Object oldValue) {
+			this.phoneNumber = phoneNumber;
 			this.setting = setting;
+			this.oldValue = oldValue;
 		}
 
 		@Override
 		public void onErrorResponse(VolleyError response) {
-			propertyChangeHandler.firePropertyChange(setting.name(), oldValue, oldValue);
+			setLocalDeviceSetting(phoneNumber, setting, oldValue, oldValue);
 		}
 	}	
 }

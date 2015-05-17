@@ -1,4 +1,4 @@
-package datatrackerclient.servercommunications;
+package com.csc258.datatrackerclient.servercommunications;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,8 +34,8 @@ public class DataTrackerRequest extends StringRequest {
 		
 		this.requestType = requestType;
 		
-		setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
-				DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+		setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 3,
+				0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 	}
 
 	@Override

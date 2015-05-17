@@ -17,8 +17,8 @@ public class DataTrackerConstants {
 	public static final String BYTES_PARAM = "bytes";
 	public static final String SETTING_PARAM = "setting";
 	public static final String VALUE_PARAM = "value";
-	public static final String DATE_BEGIN_PARAM = "dateBegin";
-	public static final String DATE_END_PARAM = "dateEnd";
+	public static final String BEGIN_DATE_PARAM = "beginDate";
+	public static final String END_DATE_PARAM = "endDate";
 
     public static String dateToString(Date date) {
     	if(date == null) {

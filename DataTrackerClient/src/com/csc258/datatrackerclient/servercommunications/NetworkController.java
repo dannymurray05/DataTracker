@@ -1,5 +1,5 @@
 
-package datatrackerclient.servercommunications;
+package com.csc258.datatrackerclient.servercommunications;
 
 import android.app.Application;
 import android.text.TextUtils;

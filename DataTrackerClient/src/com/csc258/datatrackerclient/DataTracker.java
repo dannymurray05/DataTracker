@@ -1,4 +1,7 @@
-package datatrackerclient;
+package com.csc258.datatrackerclient;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -10,42 +13,52 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
-import com.example.datatrackerclient.R;
+import com.csc258.datatrackerclient.mobiledatamanagement.DataTrackingManager;
+import com.csc258.datatrackerclient.mobiledatamanagement.DataUsageDisplay;
+import com.csc258.datatrackerclient.mobiledatamanagement.DataUsageManager;
+import com.csc258.datatrackerclient.sessionmanagement.Login;
+import com.csc258.datatrackerclient.sessionmanagement.SessionManager;
+import com.csc258.datatrackerclient.sessionmanagement.SessionManager.SessionStatus;
+import com.csc258.datatrackerclient.settingsmanagement.AccountSettingsDisplay;
+import com.csc258.datatrackerclient.settingsmanagement.SettingsManager;
 
-import datatrackerclient.sessionmanagement.Login;
-import datatrackerclient.sessionmanagement.SessionManager;
-import datatrackerclient.settingsmanagement.AccountSettingsDisplay;
-import datatrackerclient.settingsmanagement.SettingsManager;
-import datatrackerstandards.settings.AccountSetting;
-
-public class DataTracker extends FragmentActivity implements NumberPicker.OnValueChangeListener, OnClickListener{
-
+public class DataTracker extends FragmentActivity implements NumberPicker.OnValueChangeListener, OnClickListener, PropertyChangeListener {
+	private SessionManager session;
 	private TextView tv;
     static Dialog d ;
 	public static final int LOGIN_REQUEST = 0b1;
 	//DatePicker getdate;
 	
 	//public static final long SETTINGS_SYNC_MAX_RATE = 1800000; //30 minutes
-	public static final long SETTINGS_SYNC_MAX_RATE = 30000; //30 minutes
+	public static final long SESSION_CHECK_MAX_RATE = 30000; //30 minutes
+	public static final long SETTINGS_SYNC_MAX_RATE = 3000; //30 minutes
 	public static final long DATA_SYNC_MAX_RATE = 300000; //5 minutes
+	private long lastSessionCheck = 0;
 	private long lastSettingsSync = 0;
-	private long lastDataSync = 0;
+	//private long lastDataSync = 0;
 	
 	@Override
 	protected void onStart() {
 		super.onStart();
-		startActivityForResult(new Intent(this, Login.class), LOGIN_REQUEST);
+		
+        this.startService(new Intent(this, DataUsageManager.class));	
+        this.startService(new Intent(this, DataTrackingManager.class));
+		
+		long currentTime = System.currentTimeMillis();
+		session = SessionManager.getInstance(this, this, SessionManager.SESSION_STATUS);
+		if(session.isLoggedOut() || currentTime - lastSessionCheck > SESSION_CHECK_MAX_RATE) {
+			session.logIn();
+			lastSessionCheck = currentTime;
+		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 
 		SessionManager.SessionStatus loginResult = SessionManager.SessionStatus.values()[resultCode];
@@ -78,8 +91,7 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
 				/*if(dataUsage != null && currentTime - lastDataSync > DATA_SYNC_MAX_RATE) {
 					dataUsage.syncData();
 					lastDatSync = currentTime;
-				}
-				*/
+				}*/
 				break;
 			default:
 				break;
@@ -97,11 +109,14 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
 		final TabHost tabHost = (TabHost) findViewById(R.id.tabhost);
 		tabHost.setup();
 		
+		FragmentTransaction acctSettingsFragTxn = fragmentManager.beginTransaction();
+		DataUsageDisplay dataDisplay = new DataUsageDisplay();
+		acctSettingsFragTxn.add(R.id.data_usage_view, dataDisplay);
+		
 		TabSpec spec1 =  tabHost.newTabSpec("DataManagment");
-		spec1.setContent(R.id.tab1);
+		spec1.setContent(R.id.data_usage_view);
 		spec1.setIndicator("Data Usage",null);
 
-		FragmentTransaction acctSettingsFragTxn = fragmentManager.beginTransaction();
 		AccountSettingsDisplay accountSettings = new AccountSettingsDisplay();
 		acctSettingsFragTxn.add(R.id.settings_view, accountSettings);
 		acctSettingsFragTxn.commit();
@@ -141,10 +156,9 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
 
 	@Override
 	public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-		// TODO Auto-generated method stub
 		 Log.i("value is",""+newVal);
 		
-		}
+	}
 	
 	public void show()
     {
@@ -167,9 +181,7 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
            }    
           });
         
-       d.show();
-
-
+         d.show();
     }
 
 	@Override
@@ -177,6 +189,26 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
 		 if(v.findViewById(R.id.logoutButton) == v) {
 			SessionManager.getInstance(this, null).logOut();
 			startActivityForResult(new Intent(this, Login.class), LOGIN_REQUEST);
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		String propertyName = event.getPropertyName();
+		if(propertyName.equals(SessionManager.SESSION_STATUS)) {
+			SessionStatus status = (SessionStatus)event.getNewValue();
+			switch(status) {
+				case DEVICE_ONLY:
+					break;
+				case LOGGED_IN:
+					break;
+				case LOGGED_OUT:
+					startActivityForResult(new Intent(this, Login.class), LOGIN_REQUEST);
+					session.getPropertyChangeHandler().removePropertyChangeListener(SessionManager.SESSION_STATUS, this);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

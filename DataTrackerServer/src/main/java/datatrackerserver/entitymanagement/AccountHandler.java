@@ -41,10 +41,11 @@ public class AccountHandler {
 			System.out.println("Account already exists");
 			return AccountRegistrationStatus.ACCOUNT_ALREADY_EXISTS;
 		}
-		else if(accountByEmail != null) {
+		//turned off for demo for ease of account creation
+		/*else if(accountByEmail != null) {
 			System.out.println("Email already exists");
 			return AccountRegistrationStatus.EMAIL_ALREADY_EXISTS;
-		}
+		}*/
 		else {
 			newAccount = new Account(phoneNumber, password, email);
 			newAccount.setValidationCode(SecurityManager.generateRandomCode());

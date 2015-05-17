@@ -43,11 +43,13 @@ public class DeviceHandler {
 		if(device != null) {
 			System.out.println("Device already exists! Modifying controlling account!");
 			device.setAccount(account);
+			device.setQuota(account.getQuota());
 			deviceRepo.save(device);
 			return DeviceRegistrationStatus.SUCCESS;
 		}
 		else {
 			device = new Device(phoneNumber, account);
+			device.setQuota(account.getQuota());
 			deviceRepo.save(device);
 			return DeviceRegistrationStatus.SUCCESS;
 		}

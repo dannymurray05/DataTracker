@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import datatrackerserver.entities.Device;
 
 public enum DeviceSetting implements Setting<Device> {
-	QUOTA(SettingType.INT, 1 << 20),
+	QUOTA(SettingType.INT, 0),
 	THRESHOLD(SettingType.INT, 95),
 	AUTO_SHUTOFF(SettingType.BOOLEAN, true),
 	;

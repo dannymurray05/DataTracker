@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
+import datatrackerstandards.DataError;
+
 @Entity @IdClass(UsageHistoryId.class)
 public class UsageHistory {
 
@@ -34,19 +36,19 @@ public class UsageHistory {
 		}
 	}
 
-	public boolean insertData(int hour, int bytes) {
+	public DataError insertData(int hour, int bytes) {
 		if(hour < 0 || hour > 23) { //out of range
-			return false;
+			return DataError.INVALID_HOUR;
 		}
 		else if(usage[hour] >= 0) { //hour already recorded
-			return false;
+			return DataError.HOUR_ALREADY_LOGGED;
 		}
 		else if(bytes < 0) { //bytes cannot be negative
-			return false;
+			return DataError.INVALID_BYTE_VALUE;
 		}
 		else {
 			usage[hour] = bytes;
-			return true;
+			return null;
 		}
 	}
 
