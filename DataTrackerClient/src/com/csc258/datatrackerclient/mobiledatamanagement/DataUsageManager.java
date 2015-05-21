@@ -12,7 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +24,7 @@ import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.volley.Response.ErrorListener;
@@ -76,6 +80,9 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	public static final String DEVICE_QUOTA_REACHED = "deviceQuotaReached";
 	
 
+	public static long NOTIFICATION_RATE = 600000; //notify every ten minutes (For demo)
+	private long lastNotification = 0;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -177,12 +184,36 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 		String devicePhoneNumber = session.getDeviceNumber();
 		Long deviceUsage = deviceDataUsageMap.get(devicePhoneNumber);
 		int deviceUsageKB = deviceUsage == null ? 0 : (int)(deviceUsage / 1000l);
+		
+		if(deviceUsageKB >= deviceThreshold) {
+			long currentTime = System.currentTimeMillis();
+			session = SessionManager.getInstance(this, this, SessionManager.SESSION_STATUS);
+			if((session.isLoggedIn() || session.isDeviceOnly())
+					&& currentTime - lastNotification > NOTIFICATION_RATE) {
+				notifyOverThreshold();
+				lastNotification = currentTime;
+			}	
+		}
+		
+		//check if over quota
 		if(deviceUsageKB >= deviceQuota && deviceAutoShutOff) {
+			//if over quota and control over data usage is given, shut off data usage
 			turnOffData();
 			propertyChangeHandler.firePropertyChange(DEVICE_QUOTA_REACHED, null, deviceUsageKB);
 		}
 	}
 	
+	private void notifyOverThreshold() {
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        //.setSmallIcon(null)
+		        .setContentTitle("My notification")
+		        .setContentText("Hello World!");
+		NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(0, mBuilder.build());
+	}
+
 	private void calculateTotalDataUsage() {
 		accountUsage = 0;
 		for(Long deviceUsage : deviceDataUsageMap.values()) {
