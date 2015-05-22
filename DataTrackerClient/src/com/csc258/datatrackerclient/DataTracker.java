@@ -65,6 +65,8 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
 		SettingsManager settings = null;
 		switch(requestCode) {
 			case LOGIN_REQUEST:
+				long currentTime = System.currentTimeMillis();
+				lastSessionCheck = currentTime;
 				switch(loginResult) {
                     case DEVICE_ONLY:
                     	//set up user settings
@@ -81,8 +83,6 @@ public class DataTracker extends FragmentActivity implements NumberPicker.OnValu
 				settings = SettingsManager.getInstance(this, null);
             	//dataUsage = DataUsageManager.getInstance(this, null);
 
-				long currentTime = System.currentTimeMillis();
-				
 				if(settings != null && currentTime - lastSettingsSync > SETTINGS_SYNC_MAX_RATE) {
 					//update settings
 					settings.syncSettings();

@@ -91,6 +91,7 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 		session = SessionManager.getInstance(this, this, SessionManager.SESSION_STATUS);
 
 		settings = SettingsManager.getInstance(this, null);
+		settings.addListener(this, SettingsManager.SETTINGS);
 		settings.addListener(this, "account:" + AccountSetting.QUOTA.name());
 		settings.addListener(this, "account:" + AccountSetting.THRESHOLD.name());
 		settings.addListener(this, "account:" + AccountSetting.BILLING_CYCLE.name());
@@ -143,7 +144,7 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 		//-individual device usage
 		//-no other device's specific usage will be displayed.
 		ServerRequestHandler.requestAccountData(new DataListener(), new DataErrorListener(),
-				session.getDeviceNumber(), cycleBegin.getTime(), cycleEnd.getTime());
+				session.getAccountNumber(), cycleBegin.getTime(), cycleEnd.getTime());
 	
 	}
 
@@ -280,6 +281,9 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 				
 				calculateDataUsage(deviceHistory);
 			}
+			else {
+				Log.d(TAG, "Failed to retrieve data from server!");
+			}
 		}
 	}
 	
@@ -309,6 +313,46 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 			restartUpdateCountdown();
 			Log.d(TAG, "TESTING");
 			//gatherData();
+		}
+		else if(propertyName.equals(SettingsManager.SETTINGS)) {
+			for(AccountSetting setting : AccountSetting.values()) {
+				switch(setting) {
+					case BILLING_CYCLE:
+						billingCyclePeriod = Integer.class.cast((settings.getAccountSetting(setting)));
+						restartUpdateCountdown();
+						break;
+					case QUOTA:
+						accountQuota = Integer.class.cast(settings.getAccountSetting(setting));
+						restartUpdateCountdown();
+						break;
+					case THRESHOLD:
+						accountThreshold = Integer.class.cast(settings.getAccountSetting(setting));
+						restartUpdateCountdown();
+						break;
+					default:
+						break;
+				
+				}	
+			}
+
+			for(DeviceSetting setting : DeviceSetting.values()) {
+				switch(setting) {
+					case AUTO_SHUTOFF:
+						deviceAutoShutOff = Boolean.class.cast(settings.getDeviceSetting(devicePhoneNumber, setting));
+						restartUpdateCountdown();
+						break;
+					case QUOTA:
+						deviceQuota = Integer.class.cast(settings.getDeviceSetting(devicePhoneNumber, setting));
+						restartUpdateCountdown();
+						break;
+					case THRESHOLD:
+						deviceThreshold = Integer.class.cast(settings.getDeviceSetting(devicePhoneNumber, setting));
+						restartUpdateCountdown();
+						break;
+					default:
+						break;
+				}
+			}
 		}
 		else {
 			String[] settingInfo = propertyName.split(":");
