@@ -90,7 +90,7 @@ public class DataUsageDisplay extends Fragment implements PropertyChangeListener
 
 	public void setAccountDataUsageDisplay(int dataUsage) {
 		accountDataUsageBar.setProgress(dataUsage);
-		accountDataUsageText.setText(String.valueOf(dataUsage));
+		accountDataUsageText.setText(String.valueOf(dataUsage) + "/" + String.valueOf(dataUsageManager.getAccountQuota()) + "KB");
 	}
 	
 	public void setAccountDataUsageQuota(int dataUsageMax) {
@@ -99,14 +99,13 @@ public class DataUsageDisplay extends Fragment implements PropertyChangeListener
 	
 	public void setAccountDataUsageThreshold(int threshold) {
 		accountDataUsageBar.setSecondaryProgress(
-				(threshold * accountDataUsageBar.getProgress()) / 100);
-		//TODO how to set threshold line color to red??
+				(threshold * dataUsageManager.getAccountQuota()) / 100);
 		//dataUsageBar.setSecondaryProgressTintList();
 	}
 	
 	public void setDeviceDataUsageDisplay(int dataUsage) {
 		deviceDataUsageBar.setProgress(dataUsage);
-		deviceDataUsageText.setText(String.valueOf(dataUsage));
+		deviceDataUsageText.setText(String.valueOf(dataUsage) + "/" + String.valueOf(dataUsageManager.getDeviceQuota()) + "KB");
 	}
 	
 	public void setDeviceDataUsageQuota(int dataUsageMax) {
@@ -115,8 +114,7 @@ public class DataUsageDisplay extends Fragment implements PropertyChangeListener
 	
 	public void setDeviceDataUsageThreshold(int threshold) {
 		deviceDataUsageBar.setSecondaryProgress(
-				(threshold * deviceDataUsageBar.getProgress()) / 100);
-		//TODO how to set threshold line color to red??
+				(threshold * dataUsageManager.getDeviceQuota()) / 100);
 		//dataUsageBar.setSecondaryProgressTintList();
 	}
 

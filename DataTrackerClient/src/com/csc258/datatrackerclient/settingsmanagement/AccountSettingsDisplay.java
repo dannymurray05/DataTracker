@@ -60,7 +60,7 @@ public class AccountSettingsDisplay extends Fragment implements PropertyChangeLi
 	private Map<String, DeviceSettingsDisplay> deviceDisplayMap; //device phone# to device display
 
 	private int oldQuota = 0;
-	public static final int MAX_QUOTA = 1 << 12; //4MB - for testing!
+	public static final int MAX_QUOTA = 1 << 18; //4MB - for testing!
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -400,7 +400,7 @@ public class AccountSettingsDisplay extends Fragment implements PropertyChangeLi
 						fragTxn.add(R.id.devices, deviceDisplay);
 					}
 				}
-				fragTxn.commit();
+				fragTxn.commitAllowingStateLoss();
 			}
 		});
 		

@@ -3,6 +3,8 @@ package com.csc258.datatrackerclient.mobiledatamanagement;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,25 +14,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.app.TaskStackBuilder;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.net.ConnectivityManager;
 import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.csc258.datatrackerclient.mobiledatamanagement.NetworkChangeReceiver.NetworkChangeInterface;
 import com.csc258.datatrackerclient.servercommunications.ServerRequestHandler;
 import com.csc258.datatrackerclient.sessionmanagement.SessionManager;
 import com.csc258.datatrackerclient.settingsmanagement.SettingsManager;
@@ -38,7 +38,7 @@ import com.csc258.datatrackerclient.settingsmanagement.SettingsManager;
 import datatrackerstandards.settings.AccountSetting;
 import datatrackerstandards.settings.DeviceSetting;
 
-public class DataUsageManager extends Service implements Runnable, PropertyChangeListener, ServiceConnection {
+public class DataUsageManager extends Service implements Runnable, PropertyChangeListener {
 	public static final String TAG = "DataUsageManager";
 	private Handler mHandler = new Handler();
 	private DataUsageBinder mDataUsageBinder = new DataUsageBinder();
@@ -52,7 +52,6 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	private SettingsManager settings;
 	//listen for network state changes and control network
 	//to make sure mobile data usage isn't overused
-	private NetworkChangeInterface networkChangeInterface;
 
 	private String devicePhoneNumber = "";
 	private long accountUsage = 0;
@@ -65,6 +64,8 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	private boolean deviceAutoShutOff;
 	private int deviceQuota = 0;
 	private int deviceThreshold = 0;
+	
+	private boolean mobileDataEnabled = false;
 
 	private PropertyChangeSupport propertyChangeHandler = new PropertyChangeSupport(this);
 	
@@ -80,7 +81,8 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	public static final String DEVICE_QUOTA_REACHED = "deviceQuotaReached";
 	
 
-	public static long NOTIFICATION_RATE = 600000; //notify every ten minutes (For demo)
+	//public static long NOTIFICATION_RATE = 600000; //notify every ten minutes (For demo)
+	public static long NOTIFICATION_RATE = 10000; //notify every ten minutes (For demo)
 	private long lastNotification = 0;
 	
 	@Override
@@ -111,10 +113,6 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 
-		//bind to service to get notifications and grab data as needed
-		Intent networkChangeReceiverIntent = new Intent(this, NetworkChangeReceiver.class);
-		this.bindService(networkChangeReceiverIntent, this, Context.BIND_AUTO_CREATE);
-
         mHandler.postDelayed(this, 0);
         return START_STICKY;
 	}
@@ -122,8 +120,9 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 
 	private void turnOffData() {
 		Log.d(TAG, "THRESHOLD REACHED! TURNING OFF MOBILE DATA USAGE!!!");
-		
-		networkChangeInterface.setMobileDataEnabled(false);
+
+		//CANNOT TURN MOBILE DATA OFF AUTOMATICALLY (NOT CLEANLY - NOT WITHOUT UGLY, IRRESPONSIBLE REFLECTION!!!)
+		//setMobileDataEnabled(false);
 	}
 
 	@Override
@@ -184,10 +183,12 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 		String devicePhoneNumber = session.getDeviceNumber();
 		Long deviceUsage = deviceDataUsageMap.get(devicePhoneNumber);
 		int deviceUsageKB = deviceUsage == null ? 0 : (int)(deviceUsage / 1000l);
-		
-		if(deviceUsageKB >= deviceThreshold) {
+
+		//Check if over threshold
+		if(deviceUsageKB >= (deviceThreshold * deviceQuota) / 100) {
 			long currentTime = System.currentTimeMillis();
 			session = SessionManager.getInstance(this, this, SessionManager.SESSION_STATUS);
+			//if over threshold, give warning notification, only if last notification was not considered recent
 			if((session.isLoggedIn() || session.isDeviceOnly())
 					&& currentTime - lastNotification > NOTIFICATION_RATE) {
 				notifyOverThreshold();
@@ -206,9 +207,9 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	private void notifyOverThreshold() {
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
-		        //.setSmallIcon(null)
-		        .setContentTitle("My notification")
-		        .setContentText("Hello World!");
+		        .setSmallIcon(R.drawable.ic_dialog_info)
+		        .setContentTitle("Mobile Data Limit Reached Threshold!")
+		        .setContentText("Mobile data has reached its threshold!");
 		NotificationManager mNotificationManager =
 			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(0, mBuilder.build());
@@ -258,6 +259,7 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 		accountThreshold = (int)settings.getAccountSetting(AccountSetting.THRESHOLD);
 		deviceQuota = (int)settings.getDeviceSetting(session.getDeviceNumber(), DeviceSetting.QUOTA);
 		deviceThreshold = (int)settings.getDeviceSetting(session.getDeviceNumber(), DeviceSetting.THRESHOLD);
+		deviceAutoShutOff = (boolean)settings.getDeviceSetting(session.getDeviceNumber(), DeviceSetting.AUTO_SHUTOFF);
 	}
 
 	private class DataListener implements Listener<String> {
@@ -360,6 +362,35 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 		}
 	}
 
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setMobileDataEnabled(boolean enabled) {
+		boolean success = true;
+		try {
+			final ConnectivityManager conman = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+			final Class conmanClass = Class.forName(conman.getClass().getName());
+			final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
+			iConnectivityManagerField.setAccessible(true);
+			final Object iConnectivityManager = iConnectivityManagerField.get(conman);
+			final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
+			final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.TYPE);
+			setMobileDataEnabledMethod.setAccessible(true);
+
+			setMobileDataEnabledMethod.invoke(iConnectivityManager, enabled);
+		}
+		catch(Exception e) {
+			success = false;
+			e.printStackTrace();
+		}
+
+		if(success) {
+			mobileDataEnabled = enabled;
+			Toast.makeText(this, "Mobile data turned " + (enabled ? "on" : "off") + "!", Toast.LENGTH_SHORT).show();
+		}
+		else {
+			Toast.makeText(this, "Failed to turn " + (enabled ? "on" : "off") + " mobile data!", Toast.LENGTH_SHORT).show();
+		}
+	}*/
+
 	public class DataUsageBinder extends Binder {
 
 		DataUsageManager getManagerService(PropertyChangeListener listener) {
@@ -447,15 +478,5 @@ public class DataUsageManager extends Service implements Runnable, PropertyChang
 	
 	public int getDeviceThreshold() {
 		return deviceThreshold;
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		networkChangeInterface = (NetworkChangeInterface)service;
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
-		networkChangeInterface = null;
 	}
 }
